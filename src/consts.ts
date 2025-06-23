@@ -32,6 +32,10 @@ export const SOCIAL_LINKS: SocialLink[] = [
     label: 'Instagram',
   },
   {
+    href: 'https://www.tiktok.com/@baroudeurculinaire',
+    label: 'Tiktok',
+  },
+  {
     href: 'https://www.linkedin.com/in/nicolas-abadie-621520264/',
     label: 'LinkedIn',
   },
@@ -47,6 +51,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
 
 export const ICON_MAP: IconMap = {
   Instagram: 'lucide:instagram',
+  Tiktok: 'lucide:music-2',
   LinkedIn: 'lucide:linkedin',
   Email: 'lucide:mail',
   RSS: 'lucide:rss',
