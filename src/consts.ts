@@ -22,21 +22,21 @@ export const NAV_LINKS: SocialLink[] = [
   },
   {
     href: '/about',
-    label: 'about',
+    label: 'a propos',
   },
 ]
 
 export const SOCIAL_LINKS: SocialLink[] = [
   {
-    href: 'https://github.com/jktrn',
-    label: 'GitHub',
+    href: 'https://www.instagram.com/baroudeurculinaire/',
+    label: 'Instagram',
   },
   {
-    href: 'https://twitter.com/enscry',
-    label: 'Twitter',
+    href: 'https://www.linkedin.com/in/nicolas-abadie-621520264/',
+    label: 'LinkedIn',
   },
   {
-    href: 'mailto:jason@enscribe.dev',
+    href: 'mailto:nicolasabadie.pro@pm.me',
     label: 'Email',
   },
   {
@@ -46,10 +46,8 @@ export const SOCIAL_LINKS: SocialLink[] = [
 ]
 
 export const ICON_MAP: IconMap = {
-  Website: 'lucide:globe',
-  GitHub: 'lucide:github',
+  Instagram: 'lucide:instagram',
   LinkedIn: 'lucide:linkedin',
-  Twitter: 'lucide:twitter',
   Email: 'lucide:mail',
   RSS: 'lucide:rss',
 }
