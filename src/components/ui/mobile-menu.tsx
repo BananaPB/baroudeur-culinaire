@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -47,15 +48,34 @@ const MobileMenu = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="bg-background">
         {NAV_LINKS.map((item) => (
-          <DropdownMenuItem key={item.href} asChild>
-            <a
-              href={item.href}
-              className="w-full text-lg font-medium capitalize"
-              onClick={() => setIsOpen(false)}
-            >
-              {item.label}
-            </a>
-          </DropdownMenuItem>
+          <div>
+            <DropdownMenuItem key={item.href} asChild>
+              <a
+                href={item.href}
+                className="w-full text-lg font-medium capitalize"
+                onClick={() => setIsOpen(false)}
+              >
+                {item.label}
+                {item.items && item.items.length > 0 && <ChevronDown />}
+              </a>
+            </DropdownMenuItem>
+            
+            {item.items && item.items.length > 0 && (
+              <div>
+                {item.items.map((sub) => (
+                  <DropdownMenuItem key={item.href} asChild>
+                    <a
+                      href={item.href + sub.href}
+                      className="block px-4 py-2 text-sm text-foreground/70"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {sub.label}
+                    </a>
+                  </DropdownMenuItem>
+                ))}
+              </div>
+            )}
+          </div>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>

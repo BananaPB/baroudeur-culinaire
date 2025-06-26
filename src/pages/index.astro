@@ -5,74 +5,42 @@ import PageHead from '@/components/PageHead.astro'
 import { buttonVariants } from '@/components/ui/button'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
-import { getRecentPosts } from '@/lib/data-utils'
+// import { getRecentPosts } from '@/lib/data-utils'
 
-const blog = await getRecentPosts(SITE.featuredPostCount)
+// const blog = await getRecentPosts(SITE.featuredPostCount)
 ---
 
 <Layout class="max-w-3xl">
-  <PageHead slot="head" title="Home" />
+  <PageHead slot="head" title="Bonjour" />
   <section>
     <div class="rounded-lg border">
       <div class="flex flex-col space-y-1.5 p-6">
-        <h3 class="text-3xl leading-none font-medium">er·u·dite</h3>
-        <p class="text-muted-foreground text-sm">
-          /ˈer(y)əˌdīt/ &bull; <span class="font-medium">adjective</span>
-        </p>
+        <h3 class="text-3xl leading-none font-medium">Bonjour</h3>
       </div>
       <div class="p-6 pt-0">
-        <p class="text-muted-foreground mb-2 text-sm">
-          astro-erudite is an opinionated, unstyled static blogging template
-          built with <Link
-            href="https://astro.build"
-            class="text-foreground"
-            external
-            underline>Astro</Link
-          >, <Link
-            href="https://tailwindcss.com"
-            class="text-foreground"
-            external
-            underline>Tailwind</Link
-          >, and <Link
-            href="https://ui.shadcn.com"
-            class="text-foreground"
-            external
-            underline>shadcn/ui</Link
-          >. Extraordinarily loosely based on the <Link
-            href="https://astro-micro.vercel.app/"
-            class="text-foreground"
-            external
-            underline>Astro Micro</Link
-          > theme.
-        </p>
-        <p class="text-muted-foreground text-sm">
-          To use this template, check out the <Link
-            href="https://github.com/jktrn/astro-erudite"
-            class="text-foreground"
-            underline
-            external>GitHub</Link
-          > repository. To learn more about why this template exists, read this blog
-          post: <Link
-            href="/blog/the-state-of-static-blogs"
-            class="text-foreground"
-            underline>The State of Static Blogs in 2024</Link
-          >.
+        <p>
+          Pour une raison inconnue, vous avez atterri sur ce journal, bienvenu à vous. Ce site archive des notes personnelles traitant divers sujets qui ont 
+          mon intérêt. En vous baladant ici, vous pourrez aussi bien trouver des écrits parlant de finances ou de psychologie que des longs articles sur la 
+          méthodologie de la pâtisserie française.
         </p>
       </div>
     </div>
   </section>
   <section class="flex flex-col gap-y-4">
-    <h2 class="text-2xl font-medium">Latest posts</h2>
-    <ul class="flex flex-col gap-y-4">
-      {
-        blog.map((post) => (
-          <li>
-            <BlogCard entry={post} />
-          </li>
-        ))
-      }
-    </ul>
-    <div class="flex justify-center">
+    <h2 class="text-2xl font-medium">Comment naviguer ici ?</h2>
+    <p>
+      Tout ce qui se trouve dans ce journal a été écrit et réécrit par moi-même après avoir passé trop de temps à y réfléchir. Mon journal est rangé en trois 
+      grandes catégories :
+      <ul class="flex flex-col gap-5">
+        <li><span class="font-bold">💡Idées :</span> des listes d'idées sur des sujets variés, que je note dans l'espoir d'en réaliser quelques-unes un jour, ou bien pour pouvoir les raconter en 
+        soirée et passer pour quelqu'un d'extrêmement créatif.</li>
+        <li><span class="font-bold">🧠 Apprentissage :</span> des sujets qui m'ont intéressé assez un jour pour que je décide d'en faire une note afin d'essayer d'en retenir quelque chose.</li>
+        <li><span class="font-bold">🍰 Pâtisserie :</span> des articles sur la théorie et la méthode de la pâtisserie ou simplement des notes d'apprentissage. Je fais beaucoup de recherches qui 
+        tournent autour de la pâtisserie végétale et de la pâtisserie scientifique, j'essaye d'archiver ici tout ce qui en découle.</li>
+      </ul>
+    </p>
+
+    <!-- <div class="flex justify-center">
       <Link
         href="/blog"
         class={buttonVariants({ variant: 'ghost' }) + ' group'}
@@ -82,6 +50,20 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           >&rarr;</span
         >
       </Link>
-    </div>
+    </div> -->
+  </section>
+  <section class="flex flex-col gap-y-4">
+    <h2 class="text-2xl font-medium">Obsidian</h2>
+    <p>
+      J'utilise <Link href='https://obsidian.md/' external underline class="text-foreground">Obsidian</Link> pour écrire de façon quotidienne, c'est un outil fantastique. J'essaye de maintenir les notes organisées et triées d'une façon logique, mais la 
+      navigation instinctive réserve parfois plus de surprise que le système hiérarchique vertical. Je vous invite à vous balader d'une note 
+      à l'autre au fil des sujets qui vous intéressent.
+    </p>
+  </section>
+  <section class="flex flex-col gap-y-4">
+    <h2 class="text-2xl font-medium">Pour en savoir plus</h2>
+    <p>
+      Pour en savoir plus sur ma personne, je vous invite à faire un tour <Link href='/about' underline class='text-foreground'>sur la page dédiée.</Link>
+    </p>
   </section>
 </Layout>

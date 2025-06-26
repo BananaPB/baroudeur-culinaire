@@ -51,7 +51,7 @@
   font-display: swap;
 }
 
-:root {
+/* :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
@@ -65,19 +65,34 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
+} */
+:root {
+  --background: oklch(0.9856 0.0084 56.32);
+  --foreground: oklch(0.1353 0.0288 70.3);
+  --primary: oklch(0.7251 0.1376 53.82);
+  --primary-foreground: oklch(0.1353 0.0288 70.3);
+  --secondary: oklch(0.8191 0.0835 73.37);
+  --secondary-foreground: oklch(0.1353 0.0288 70.3);
+  --muted: oklch(0.8621 0.1663 85.24);
+  --muted-foreground: oklch(0.1353 0.0288 70.3);
+  --accent: oklch(0.8621 0.1663 85.24);
+  --accent-foreground: oklch(0.1353 0.0288 70.3);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
 }
 
 [data-theme='dark'] {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: oklch(0.116 0.0247 73.07);
+  --foreground: oklch(0.9728 0.0152 61.35);
+  --primary: oklch(0.5668 0.1395 50.16);
+  --primary-foreground: oklch(0.116 0.0247 73.07);
+  --secondary: oklch(0.4668 0.0868 69.18);
+  --secondary-foreground: oklch(0.9728 0.0152 61.35);
+  --muted: oklch(0.5706 0.1174 75.42);
+  --muted-foreground: oklch(0.9728 0.0152 61.35);
+  --accent: oklch(0.7175 0.1477 82.29);
+  --accent-foreground: oklch(0.116 0.0247 73.07);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --ring: oklch(0.556 0 0);
@@ -91,4 +106,9 @@
   ::file-selector-button {
     @apply border-border outline-ring/50 tracking-tight;
   }
+}
+
+/* Example styles for dropdown */
+.group:hover .group-hover\:flex {
+  display: flex !important;
 }

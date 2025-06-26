@@ -1,4 +1,4 @@
-import type { IconMap, SocialLink, Site } from '@/types'
+import type { IconMap, SocialLink, Site, NavLink } from '@/types'
 
 export const SITE: Site = {
   title: 'Baroudeur Culinaire',
@@ -11,18 +11,30 @@ export const SITE: Site = {
   postsPerPage: 3,
 }
 
-export const NAV_LINKS: SocialLink[] = [
+export const NAV_LINKS: NavLink[] = [
   {
     href: '/blog',
-    label: 'blog',
+    label: 'Blog',
   },
   {
-    href: '/authors',
-    label: 'authors',
+    href: '/theory',
+    label: 'Théorie',
+    items: [
+      { label: 'Méthodes', href: '/methods' },
+      { label: 'Composants', href: '/components' },
+    ]
+  },
+  {
+    href: '/recipes',
+    label: 'Recettes',
+    items: [
+      { label: 'Bases', href: '/bases' },
+      { label: 'Produits finis', href: '/products' },
+    ]
   },
   {
     href: '/about',
-    label: 'a propos',
+    label: 'à propos',
   },
 ]
 

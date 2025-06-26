@@ -5,7 +5,7 @@ import PageHead from '@/components/PageHead.astro'
 import PaginationComponent from '@/components/ui/pagination'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
-import { getAllPosts, groupPostsByYear } from '@/lib/data-utils'
+import { getAllPosts, groupPostsByYear } from '@/lib/blog-utils'
 import type { PaginateFunction } from 'astro'
 
 export async function getStaticPaths({

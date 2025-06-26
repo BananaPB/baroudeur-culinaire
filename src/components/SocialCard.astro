@@ -1,0 +1,46 @@
+---
+import Link from '@/components/Link.astro'
+import { Badge } from '@/components/ui/badge'
+import { formatDate } from '@/lib/utils'
+import { Icon } from 'astro-icon/components'
+import { Image } from 'astro:assets'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  social: CollectionEntry<'socials'>
+}
+
+const { social } = Astro.props
+---
+
+<div
+  class="hover:bg-secondary/50 rounded-xl border p-4 transition-colors duration-300 ease-in-out"
+>
+  <Link
+    href={social.data.link}
+    class="flex flex-col gap-4 sm:flex-row"
+    external
+  >
+    {
+      social.data.image && (
+        <div class="max-w-3xs sm:shrink-0">
+          <Image
+            src={social.data.image}
+            alt={social.data.name}
+            width={1200}
+            height={630}
+            class="object-cover"
+          />
+        </div>
+      )
+    }
+    <div class="grow">
+      <h3 class="mb-1 text-lg font-medium">
+        {social.data.name}
+      </h3>
+      <p class="text-muted-foreground mb-2 text-sm">
+        {social.data.description}
+      </p>
+    </div>
+  </Link>
+</div>

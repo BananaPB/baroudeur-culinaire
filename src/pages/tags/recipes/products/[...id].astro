@@ -1,0 +1,52 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import PageHead from '@/components/PageHead.astro'
+import RecipeCard from '@/components/RecipeCard.astro'
+import Layout from '@/layouts/Layout.astro'
+import { getAllTags, getPostsByTag, basePath } from '@/lib/recipes-utils'
+
+export async function getStaticPaths() {
+  const tagMap = await getAllTags('products')
+  const uniqueTags = Array.from(tagMap.keys())
+
+  return Promise.all(
+    uniqueTags.map(async (tag) => {
+      const posts = await getPostsByTag(tag, 'products')
+      return {
+        params: { id: tag },
+        props: {
+          tag,
+          posts,
+        },
+      }
+    }),
+  )
+}
+
+const { tag, posts } = Astro.props
+---
+
+<Layout class="max-w-3xl">
+  <PageHead
+    slot="head"
+    title={`Posts tagged with "${tag}"`}
+    description={`A collection of posts tagged with ${tag}.`}
+    noindex
+  />
+  <Breadcrumbs items={[
+    { href:'/tags', label: 'Tags', icon: 'lucide:tags' },
+    { href:`/tags/${basePath}`, label: 'Recettes', icon: 'lucide:cooking-pot' },
+    { href: `/tags/${basePath}/products`, label: 'Produits finis', icon: 'lucide:wheat' },
+    { href:'/tags', label: tag, icon: 'lucide:tags' },
+  ]} />
+
+  <ul class="flex flex-col gap-y-4">
+    {
+      posts.map((post) => (
+        <li>
+          <RecipeCard entry={post} />
+        </li>
+      ))
+    }
+  </ul>
+</Layout>

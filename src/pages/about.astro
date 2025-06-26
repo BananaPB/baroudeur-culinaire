@@ -1,46 +1,51 @@
 ---
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
-import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
-import ProjectCard from '@/components/ProjectCard.astro'
+import SocialCard from '@/components/SocialCard.astro'
 import Layout from '@/layouts/Layout.astro'
-import { getAllProjects } from '@/lib/data-utils'
+import Link from '@/components/Link.astro'
+import { getAllSocials } from '@/lib/socials-utils'
 
-const projects = await getAllProjects()
+const socials = await getAllSocials()
 ---
 
 <Layout class="max-w-3xl">
-  <PageHead slot="head" title="About" />
-  <Breadcrumbs items={[{ label: 'About', icon: 'lucide:info' }]} />
+  <PageHead slot="head" title="À propos" />
+  <Breadcrumbs items={[{ label: 'À propos', icon: 'lucide:info' }]} />
 
   <section>
     <div class="min-w-full">
       <div class="prose mb-8">
         <p class="mt-0">
-          astro-erudite is an opinionated, unstyled static blogging template
-          that prioritizes simplicity and performance, built with <Link
-            href="https://astro.build"
-            external
-            underline>Astro</Link
-          >, <Link href="https://tailwindcss.com" external underline
-            >Tailwind</Link
-          >, and <Link href="https://ui.shadcn.com" external underline
-            >shadcn/ui</Link
-          >. It provides a clean foundation for your content while being
-          extremely easy to customize.
+          Je m'appelle Nico, je suis un baroudeur culinaire et un pâtissier professionnel auto proclamé. Je travaille dans le milieu de la nourriture depuis 
+          (environ) 2015 et j'ai atterri dans le monde de la boulangerie / pâtisserie en 2019.
         </p>
         <p>
-          To learn more about the philosophy behind this template, check out the
-          following blog post: <Link
-            href="/blog/the-state-of-static-blogs"
-            underline>The State of Static Blogs in 2024</Link
-          >.
+          J'ai 26 ans et dans la vie je suis passionné par le fait d'être passionné par des trucs. Je passe beaucoup de temps à chercher et à noter des choses. 
+          Quand ça ne concerne pas la cuisine ou la pâtisserie en général ça concerne le monde de la tech ou quelque chose que j'aimerais apprendre parce que je trouve ça 
+          soit cool soit rigolo.
         </p>
       </div>
 
-      <h2 class="mb-4 text-2xl font-medium">Example Projects Listing</h2>
-      <div class="flex flex-col gap-4">
-        {projects.map((project) => <ProjectCard project={project} />)}
+      <div class="mb-8">
+        <h2 class="mb-4 text-2xl font-medium">Pour me joindre</h2>
+        <p>
+          Ces notes qui n'engagent que moi sont là essentiellement à but d'archivage. C'est aussi un moyen facile pour moi de partager mon travail avec quelqu'un 
+          quand j'en ai l'envie ou le besoin. J'essaye de passer du temps à relire et corriger mon ouvrage au maximum, mais des fautes, coquilles ou inexactitudes 
+          peuvent tout de même demeurer.
+          Également je suis toujours ouvert à l'échange sur des sujets qui m'intéressent. Ainsi si quelqu'un souhaite me contacter dans ce but ou dans celui de 
+          me signaler une erreur (de fond ou de forme) je suis présent également sur le net :
+        </p>
+        <div class="flex flex-col gap-4 mt-5">
+          {socials.map((social) => <SocialCard social={social} />)}
+        </div>
+      </div>
+      <div>
+        <p>
+          Éventuellement j'ai une adresse email personnelle que je retirerais surement quand j'aurais reçu assez de messages de bots qui scrappent le web pour 
+          penser que c'était une mauvaise idée de l'écrire ici :
+        </p>
+        <div class="w-full text-center py-5"><Link href='mailto:nicolasabadie.pro@pm.me'>nicolasabadie.pro@pm.me</Link></div>
       </div>
     </div>
   </section>

@@ -1,0 +1,52 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import PageHead from '@/components/PageHead.astro'
+import TheoryCard from '@/components/TheoryCard.astro'
+import Layout from '@/layouts/Layout.astro'
+import { getAllTags, getPostsByTag, basePath } from '@/lib/theory-utils'
+
+export async function getStaticPaths() {
+  const tagMap = await getAllTags('methods')
+  const uniqueTags = Array.from(tagMap.keys())
+
+  return Promise.all(
+    uniqueTags.map(async (tag) => {
+      const posts = await getPostsByTag(tag, 'methods')
+      return {
+        params: { id: tag },
+        props: {
+          tag,
+          posts,
+        },
+      }
+    }),
+  )
+}
+
+const { tag, posts } = Astro.props
+---
+
+<Layout class="max-w-3xl">
+  <PageHead
+    slot="head"
+    title={`Posts tagged with "${tag}"`}
+    description={`A collection of posts tagged with ${tag}.`}
+    noindex
+  />
+  <Breadcrumbs items={[
+    { href:'/tags', label: 'Tags', icon: 'lucide:tags' },
+    { href:`/tags/${basePath}`, label: 'Recettes', icon: 'lucide:notebook' },
+    { href: `/tags/${basePath}/methods`, label: 'Méthodes', icon: 'lucide:drafting-compass' },
+    { href:'/tags', label: tag, icon: 'lucide:tags' },
+  ]} />
+
+  <ul class="flex flex-col gap-y-4">
+    {
+      posts.map((post) => (
+        <li>
+          <TheoryCard entry={post} />
+        </li>
+      ))
+    }
+  </ul>
+</Layout>
