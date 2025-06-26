@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "name" : "Instagram",
+        "description" : "C'est le réseau social ou j'aimerais être le plus actif. J'y poste essentiellement du contenu qui tourne autour de la pâtisserie avec une prédominence de la pâtisserie sans produits d'origine animale.",
+        "image" : "../../../public/static/social-instagram.png",
+        "link" : "https://www.instagram.com/baroudeurculinaire/"
+    },
+     {
+        "id": 2,
+        "name" : "Tiktok",
+        "description" : "Pas super actif pour le moment, mais j'aimerais y remédier en 2025.",
+        "image" : "../../../public/static/social-tiktok.png",
+        "link" : "https://www.tiktok.com/@baroudeurculinaire"
+    },
+    {
+        "id": 3,
+        "name" : "Bluesky",
+        "description" : "Au cas où ce réseau deviendrait actif un jour.",
+        "image" : "../../../public/static/social-bluesky.png",
+        "link" : "https://bsky.app/profile/lerigolo.cool"
+    },
+    {
+        "id": 4,
+        "name" : "Linkedin",
+        "description" : "Plus le temps passe plus ce site me semble étrange, mais il parait que c'est bien d'y être alors j'essaye d'y rester un minimum actif pour le bien de mes activités professionelles.",
+        "image" : "../../../public/static/social-linkedin.png",
+        "link" : "https://www.linkedin.com/in/nicolas-abadie-621520264/"
+    }
+]

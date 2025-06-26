@@ -5,8 +5,9 @@ import SocialCard from '@/components/SocialCard.astro'
 import Layout from '@/layouts/Layout.astro'
 import Link from '@/components/Link.astro'
 import { getAllSocials } from '@/lib/socials-utils'
+import { getCollection } from 'astro:content'
 
-const socials = await getAllSocials()
+const allSocials = await getCollection('socials')
 ---
 
 <Layout class="max-w-3xl">
@@ -14,19 +15,22 @@ const socials = await getAllSocials()
   <Breadcrumbs items={[{ label: 'À propos', icon: 'lucide:info' }]} />
 
   <section>
-    <div class="min-w-full">
-      <div class="prose mb-8">
-        <p class="mt-0">
-          Je m'appelle Nico, je suis un baroudeur culinaire et un pâtissier professionnel auto proclamé. Je travaille dans le milieu de la nourriture depuis 
-          (environ) 2015 et j'ai atterri dans le monde de la boulangerie / pâtisserie en 2019.
-        </p>
-        <p>
-          J'ai 26 ans et dans la vie je suis passionné par le fait d'être passionné par des trucs. Je passe beaucoup de temps à chercher et à noter des choses. 
-          Quand ça ne concerne pas la cuisine ou la pâtisserie en général ça concerne le monde de la tech ou quelque chose que j'aimerais apprendre parce que je trouve ça 
-          soit cool soit rigolo.
-        </p>
-      </div>
-
+    <div class="min-w-full flex flex-col gap-y-6">
+      <section>
+        <div class="rounded-lg border p-6 prose">
+          <div>
+            <p>
+              Je m'appelle Nico, je suis un baroudeur culinaire et un pâtissier professionnel auto proclamé. Je travaille dans le milieu de la nourriture depuis 
+              (environ) 2015 et j'ai atterri dans le monde de la boulangerie / pâtisserie en 2019.
+            </p>
+            <p>
+              J'ai 26 ans et dans la vie je suis passionné par le fait d'être passionné par des trucs. Je passe beaucoup de temps à chercher et à noter des choses. 
+              Quand ça ne concerne pas la cuisine ou la pâtisserie en général ça concerne le monde de la tech ou quelque chose que j'aimerais apprendre parce que je trouve ça 
+              soit cool soit rigolo.
+            </p>
+          </div>
+        </div>
+      </section>
       <div class="mb-8">
         <h2 class="mb-4 text-2xl font-medium">Pour me joindre</h2>
         <p>
@@ -37,7 +41,7 @@ const socials = await getAllSocials()
           me signaler une erreur (de fond ou de forme) je suis présent également sur le net :
         </p>
         <div class="flex flex-col gap-4 mt-5">
-          {socials.map((social) => <SocialCard social={social} />)}
+          {allSocials.map((social) => <SocialCard social={social} />)}
         </div>
       </div>
       <div>

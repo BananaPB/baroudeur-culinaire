@@ -2,12 +2,13 @@
 import BlogCard from '@/components/BlogCard.astro'
 import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
-import { buttonVariants } from '@/components/ui/button'
-import { SITE } from '@/consts'
+import RecipeCard from '@/components/RecipeCard.astro'
 import Layout from '@/layouts/Layout.astro'
-// import { getRecentPosts } from '@/lib/data-utils'
+import { getRecentPosts as recentPosts } from '@/lib/blog-utils'
+import { getRecentPosts as recentRecipes } from '@/lib/recipes-utils'
 
-// const blog = await getRecentPosts(SITE.featuredPostCount)
+const lastPosts = await recentPosts(3)
+const lastRecipes = await recentRecipes(3)
 ---
 
 <Layout class="max-w-3xl">
@@ -27,30 +28,26 @@ import Layout from '@/layouts/Layout.astro'
     </div>
   </section>
   <section class="flex flex-col gap-y-4">
-    <h2 class="text-2xl font-medium">Comment naviguer ici ?</h2>
-    <p>
-      Tout ce qui se trouve dans ce journal a été écrit et réécrit par moi-même après avoir passé trop de temps à y réfléchir. Mon journal est rangé en trois 
-      grandes catégories :
-      <ul class="flex flex-col gap-5">
-        <li><span class="font-bold">💡Idées :</span> des listes d'idées sur des sujets variés, que je note dans l'espoir d'en réaliser quelques-unes un jour, ou bien pour pouvoir les raconter en 
-        soirée et passer pour quelqu'un d'extrêmement créatif.</li>
-        <li><span class="font-bold">🧠 Apprentissage :</span> des sujets qui m'ont intéressé assez un jour pour que je décide d'en faire une note afin d'essayer d'en retenir quelque chose.</li>
-        <li><span class="font-bold">🍰 Pâtisserie :</span> des articles sur la théorie et la méthode de la pâtisserie ou simplement des notes d'apprentissage. Je fais beaucoup de recherches qui 
-        tournent autour de la pâtisserie végétale et de la pâtisserie scientifique, j'essaye d'archiver ici tout ce qui en découle.</li>
+    <h2 class="text-2xl font-medium">Dernières recettes :</h2>
+    <section class="flex flex-col gap-y-4">
+      <ul class="flex flex-col gap-4">
+        {lastRecipes && lastRecipes.length > 0 &&
+          lastRecipes.map((post) => <li><RecipeCard entry={post}/></li>)
+          
+        }
       </ul>
-    </p>
-
-    <!-- <div class="flex justify-center">
-      <Link
-        href="/blog"
-        class={buttonVariants({ variant: 'ghost' }) + ' group'}
-      >
-        See all posts <span
-          class="ml-1.5 transition-transform group-hover:translate-x-1"
-          >&rarr;</span
-        >
-      </Link>
-    </div> -->
+    </section>
+  </section>
+  <section class="flex flex-col gap-y-4">
+    <h2 class="text-2xl font-medium">Derniers articles :</h2>
+    <section class="flex flex-col gap-y-4">
+      <ul class="flex flex-col gap-4">
+        {lastPosts && lastPosts.length > 0 &&
+          lastPosts.map((post) => <li><BlogCard entry={post}/></li>)
+          
+        }
+      </ul>
+    </section>
   </section>
   <section class="flex flex-col gap-y-4">
     <h2 class="text-2xl font-medium">Obsidian</h2>
