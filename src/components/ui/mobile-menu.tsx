@@ -48,7 +48,7 @@ const MobileMenu = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="bg-background">
         {NAV_LINKS.map((item) => (
-          <div>
+          <div key={item.href}>
             <DropdownMenuItem key={item.href} asChild>
               <a
                 href={item.href}
@@ -63,7 +63,7 @@ const MobileMenu = () => {
             {item.items && item.items.length > 0 && (
               <div>
                 {item.items.map((sub) => (
-                  <DropdownMenuItem key={item.href} asChild>
+                  <DropdownMenuItem key={item.href + sub.href} asChild>
                     <a
                       href={item.href + sub.href}
                       className="block px-4 py-2 text-sm text-foreground/70"

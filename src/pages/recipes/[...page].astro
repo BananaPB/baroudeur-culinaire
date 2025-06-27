@@ -7,6 +7,7 @@ import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import { getAllPosts, groupPostsByYear } from '@/lib/recipes-utils'
 import type { PaginateFunction } from 'astro'
+import Search from '@/components/Search.astro'
 
 export async function getStaticPaths({
   paginate,
@@ -25,34 +26,40 @@ const years = Object.keys(recipesByYear).sort((a, b) => parseInt(b) - parseInt(a
 
 <Layout class="max-w-3xl">
   <PageHead slot="head" title="Recettes" />
-  <Breadcrumbs
-    items={[
-      { label: 'Recettes', href: '/recipes', icon: 'lucide:cooking-pot' },
-      { label: `Page ${page.currentPage}`, icon: 'lucide:book-copy' },
-    ]}
-  />
-
-  <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8">
-    {
-      years.map((year) => (
-        <section class="flex flex-col gap-y-4">
-          <div class="font-medium">{year}</div>
-          <ul class="flex flex-col gap-4">
-            {recipesByYear[year].map((post) => (
-              <li>
-                <RecipeCard entry={post} />
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))
-    }
+  <div class="ariane flex flex-col justify-center sm:flex-row sm:justify-between gap-5">
+    <Breadcrumbs
+      items={[
+        { label: 'Recettes', href: '/recipes', icon: 'lucide:cooking-pot' },
+        { label: `Page ${page.currentPage}`, icon: 'lucide:book-copy' },
+      ]}
+    />
+    <Search client:load hide-note results="search-results" content="search-none" collection='recipes'/>
   </div>
 
-  <PaginationComponent
-    currentPage={page.currentPage}
-    totalPages={page.lastPage}
-    baseUrl="/recipes/"
-    client:load
-  />
+  <div id="search-results" class="min-h-[calc(100vh-18rem)] flex-col gap-y-8 hidden"></div>
+  <div id="search-none">
+    <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8">
+      {
+        years.map((year) => (
+          <section class="flex flex-col gap-y-4">
+            <div class="font-medium">{year}</div>
+            <ul class="flex flex-col gap-4">
+              {recipesByYear[year].map((post) => (
+                <li>
+                  <RecipeCard entry={post} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+
+    <PaginationComponent
+      currentPage={page.currentPage}
+      totalPages={page.lastPage}
+      baseUrl="/recipes/"
+      client:load
+    />
+  </div>
 </Layout>
