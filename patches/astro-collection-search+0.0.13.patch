@@ -1,17 +1,13 @@
 diff --git a/node_modules/astro-collection-search/src/index.ts b/node_modules/astro-collection-search/src/index.ts
-index bba7cbc..1d46013 100644
+index bba7cbc..7493e79 100644
 --- a/node_modules/astro-collection-search/src/index.ts
 +++ b/node_modules/astro-collection-search/src/index.ts
-@@ -1,4 +1,3 @@
--
- import minisearch from 'minisearch';
- import fs from 'fs/promises';
- import path from 'path';
-@@ -95,7 +94,14 @@ const ReadCollection = async (collection: string, fields: string[], logger: Astr
+@@ -95,7 +95,13 @@ const ReadCollection = async (collection: string, fields: string[], logger: Astr
          const file = path.relative(dir, entry);
  
          const contents = await fs.readFile(entry, { encoding: 'utf-8' });
 -        let [_, fm, body] = contents.split('---\n');
++
 +        let parts = contents.split(/^---\s*[\r\n]+/m);
 +        if (parts.length < 3) {
 +          logger.warn(`Skipping file without valid frontmatter: ${entry}`);
@@ -21,24 +17,24 @@ index bba7cbc..1d46013 100644
  
          const doc: Doc = {
            body,
-@@ -105,17 +111,22 @@ const ReadCollection = async (collection: string, fields: string[], logger: Astr
+@@ -105,17 +111,21 @@ const ReadCollection = async (collection: string, fields: string[], logger: Astr
          
          const frontmatter: Record<string, string> = {};
          for (const line of fm.split(/\n/)) {
 -          let [key, value] = line.split(':', 2).map(value => value.trim());
--
--          // remove quotes. minisearch doesn't care but when we show 
--          // these values we don't want them to be quoted
--
 +          if (!line.trim() || line.trim().startsWith('#')) {
 +            continue;
 +          }
+ 
+-          // remove quotes. minisearch doesn't care but when we show 
+-          // these values we don't want them to be quoted
 +          const colonIndex = line.indexOf(':');
 +          if (colonIndex === -1) {
-+            continue; // Skip lines without colons
++            continue;
 +          }
 +          const key = line.substring(0, colonIndex).trim();
 +          let value = line.substring(colonIndex + 1).trim();
+ 
            if (/^['"].*['"]$/.test(value)) {
              value = value.substring(1, value.length - 1);
            }
@@ -48,3 +44,42 @@ index bba7cbc..1d46013 100644
            if (fields.includes(key)) {
              doc[key] = value;
            }
+@@ -160,8 +170,6 @@ const RebuildSearchIndex = async (options: SearchIndexOptions = {}, logger: Astr
+ 
+   if (docs.length) {
+ 
+-    // assign IDs
+-
+     for (const [id, doc] of docs.entries()) {
+       doc.id = id;
+     }
+@@ -177,15 +185,10 @@ const RebuildSearchIndex = async (options: SearchIndexOptions = {}, logger: Astr
+ 
+     logger.info(`writing search index`);
+ 
+-    // for some reason minisearch doesn't serialize options, so we have
+-    // to keep track of them ourselves. we should talk to them about that.
+-
+-    // while we're doing that let's keep track of our options as well
+-
+     const json = JSON.stringify({
+       index,
+       fields: [...fields, 'body'],
+-      storeFields: [...fields, 'frontmatter', 'collection', 'file'], // do we need to duplicate fields here?
++      storeFields: [...fields, 'frontmatter', 'collection', 'file'],
+ 
+       collections: options.collections,
+     });
+@@ -195,12 +198,6 @@ const RebuildSearchIndex = async (options: SearchIndexOptions = {}, logger: Astr
+ 
+     await fs.writeFile(path.join(options.directory ?? 'public', constants.artifacts_directory, constants.index_name), json, { encoding: 'utf-8' });
+ 
+-    // copy search worker. we don't need to do this every time, FIXME
+-
+-    // this is the name in our dist/ directory, not what it will be named
+-    // when it's copied. don't change this one (unless you change the build
+-    // output).
+-
+     const worker = 'minisearch-worker.mjs';
+ 
+     logger.info(`copying search worker`);
