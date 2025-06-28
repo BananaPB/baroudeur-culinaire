@@ -2,7 +2,7 @@ import { formatDate } from '@/lib/utils';
 import { type CollectionSearchResult, Search, WarmStart } from 'astro-collection-search';
 import { useEffect } from "react";
 
-export default function SearchClient() {
+function SearchClient() {
   useEffect(() => {
     initSearchComponent();
   }, []);
@@ -131,3 +131,5 @@ function initSearchComponent() {
     }
     });
 }
+
+export { SearchClient }

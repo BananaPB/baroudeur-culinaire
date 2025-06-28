@@ -18,8 +18,8 @@ import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-s
 import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
 
 import tailwindcss from '@tailwindcss/vite'
-
 import collectionSearch from 'astro-collection-search';
+import { fileURLToPath } from 'url';
 
 export default defineConfig({
   site: 'https://astro-erudite.vercel.app',
@@ -72,6 +72,11 @@ export default defineConfig({
   })],
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
+      },
+    },
   },
   server: {
     port: 1234,

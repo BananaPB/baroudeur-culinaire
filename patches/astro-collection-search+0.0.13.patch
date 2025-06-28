@@ -1,0 +1,24 @@
+diff --git a/node_modules/astro-collection-search/src/index.ts b/node_modules/astro-collection-search/src/index.ts
+index bba7cbc..d59f8d1 100644
+--- a/node_modules/astro-collection-search/src/index.ts
++++ b/node_modules/astro-collection-search/src/index.ts
+@@ -1,4 +1,3 @@
+-
+ import minisearch from 'minisearch';
+ import fs from 'fs/promises';
+ import path from 'path';
+@@ -95,7 +94,13 @@ const ReadCollection = async (collection: string, fields: string[], logger: Astr
+         const file = path.relative(dir, entry);
+ 
+         const contents = await fs.readFile(entry, { encoding: 'utf-8' });
+-        let [_, fm, body] = contents.split('---\n');
++        let parts = contents.split(/^---\s*[\r\n]+/m);
++        if (parts.length < 3) {
++          // Skip files without valid frontmatter
++          logger.warn(`Skipping file without valid frontmatter: ${entry}`);
++          continue;
++        }
++        let [_, fm, body] = parts;
+ 
+         const doc: Doc = {
+           body,

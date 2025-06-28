@@ -1,5 +1,5 @@
 ---
-import SearchClient from '@/components/ui/search'
+// import { SearchClient } from './ui/search'
 interface Props {
   'hide-note'?: boolean;
   max?: number;
@@ -11,7 +11,7 @@ interface Props {
 const props = Astro.props;
 ---
 
-<SearchClient client:load />
+<!-- <SearchClient client:load /> -->
 
 <div class="search-component" data-max=`${props.max}` data-threshold=`${props.threshold}` data-content=`${props.content}` data-collection=`${props.collection}`>
 

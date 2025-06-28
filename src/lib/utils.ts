@@ -1,4 +1,3 @@
-import { getCollection } from 'astro:content'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -7,19 +6,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatDate(date: Date) {
-  return Intl.DateTimeFormat('en-US', {
+  return Intl.DateTimeFormat('fr-FR', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   }).format(date)
-}
-
-export async function getAllPosts() {
-  const collections = ['blog', 'recipes', 'theory'] as const
-  const postsArrays = await Promise.all(
-    collections.map(collection => getCollection(collection))
-  )
-  return postsArrays.flat()
 }
 
 export function calculateWordCountFromHtml(
