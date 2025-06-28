@@ -10,18 +10,6 @@ export default function SearchClient() {
 }
 
 function initSearchComponent() {
-    interface SearchEntry {
-        id: string;
-        collection: string;
-        data: {
-            date: string;
-            image?: string;
-            title: string;
-            description?: string;
-            tags?: string[];
-        };
-    }
-
     WarmStart();
 
     const component = document.querySelector('.search-component') as HTMLElement;
