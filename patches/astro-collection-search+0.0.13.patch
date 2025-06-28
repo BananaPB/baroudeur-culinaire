@@ -1,5 +1,5 @@
 diff --git a/node_modules/astro-collection-search/src/index.ts b/node_modules/astro-collection-search/src/index.ts
-index bba7cbc..1825fa3 100644
+index bba7cbc..d59f8d1 100644
 --- a/node_modules/astro-collection-search/src/index.ts
 +++ b/node_modules/astro-collection-search/src/index.ts
 @@ -1,4 +1,3 @@
