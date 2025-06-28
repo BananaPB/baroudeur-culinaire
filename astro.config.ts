@@ -71,12 +71,7 @@ export default defineConfig({
     collections: ['blog', 'recipes', 'theory']
   })],
   vite: {
-    plugins: [tailwindcss()],
-    resolve: {
-      alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url)),
-      },
-    },
+    plugins: [tailwindcss() as any]
   },
   server: {
     port: 1234,
