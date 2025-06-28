@@ -1,7 +1,7 @@
 import { SITE } from '@/consts'
 import rss from '@astrojs/rss'
 import type { APIContext } from 'astro'
-// import { getAllPosts } from '@/lib/data-utils'
+import { getAllPosts } from '@/lib/utils'
 
 export async function GET(context: APIContext) {
   try {

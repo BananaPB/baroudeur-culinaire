@@ -68,7 +68,7 @@ export default defineConfig({
   }), mdx(), react(), sitemap(), icon(),
   collectionSearch({
     fields: ['title','description','tags','image'],
-    collections: ['blog', 'recipes']
+    collections: ['blog', 'recipes', 'theory']
   })],
   vite: {
     plugins: [tailwindcss()],
