@@ -1,6 +1,7 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content'
 import type { TOCSection } from './utils'
 import { calculateWordCountFromHtml, readingTime, } from './utils'
+import slugify from 'slugify'
 
 export const basePath = 'recipes'
 
@@ -285,4 +286,78 @@ export async function getSortedTagsByCategory(category: string): Promise<
       const countDiff = b.count - a.count
       return countDiff !== 0 ? countDiff : a.tag.localeCompare(b.tag)
     })
+}
+
+export interface Ingredient {
+  name: string
+  quantity: number
+  unit: string
+  notes?: string
+  slug?: string
+}
+
+export interface RecipeIngredients {
+  ingredients: Ingredient[]
+  total: number
+}
+
+function CreateJsonPath(path: string): string {
+  if (path.startsWith('./')) {
+    return path.slice(2)
+  }
+  if (path.startsWith('/')) {
+    return path.slice(1)
+  }
+  return path
+}
+
+export const ingredientsJSON = import.meta.glob(
+  'src/content/recipes/**/ingredients.json',
+  {as: 'json'}
+)
+
+export async function getIngredients(currentPostId: string): Promise<RecipeIngredients | null> {
+    const matchPath = Object.keys(ingredientsJSON).find(path =>
+      path.includes(`/recipes/${currentPostId}/ingredients.json`)
+    );
+    const ingredients = matchPath ? await ingredientsJSON[matchPath]() : null;
+
+    (ingredients as any)?.ingredients?.forEach((group: any, i: number) => {
+      group.list.forEach((e: any, i: number) => {
+        const slug = slugify(e.name)
+        e.slug = slug
+      })
+    });
+    
+    return ingredients as RecipeIngredients | null
+}
+
+/**
+ * Processes content replacements in a post's body
+ * @param post - The post to process
+ * @param replacements - Map of words to replace (key: original word, value: replacement)
+ * @returns A new post object with replaced content
+ */
+export function processContentReplacements(
+  post: CollectionEntry<'recipes'>,
+  replacements: Map<string, string>
+): CollectionEntry<'recipes'> {
+  if (!post.body) {
+    return post
+  }
+
+  let processedBody = post.body
+
+  // Apply each replacement
+  for (const [originalWord, replacement] of replacements) {
+    // Use a case-insensitive regex to match the word with word boundaries
+    const regex = new RegExp(`\\b${originalWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi')
+    processedBody = processedBody.replace(regex, replacement)
+  }
+
+  // Create a new post object with the processed body
+  return {
+    ...post,
+    body: processedBody
+  }
 }

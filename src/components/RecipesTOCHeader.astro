@@ -1,0 +1,295 @@
+---
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { cn, getHeadingMargin, type IngredientsList } from '@/lib/utils'
+import type { MarkdownHeading } from 'astro'
+import { Icon } from 'astro-icon/components'
+
+type Props = {
+  headings: MarkdownHeading[],
+  ingredientsList: IngredientsList[],
+  currentPostId: string
+}
+
+const { headings, ingredientsList } = Astro.props
+const groups = ingredientsList.ingredients
+---
+
+{
+  headings && headings.length > 0 && (
+    <div id="mobile-toc-container" class="w-full xl:hidden">
+      <details class="group">
+        <summary class="flex w-full cursor-pointer items-center justify-between">
+          <div class="mx-auto flex w-full max-w-3xl items-center px-4 py-3">
+            <div class="relative mr-2">
+              <Icon 
+                name="lucide:wheat" 
+                class="size-4"
+              />
+            </div>
+            <span
+              id="mobile-toc-current-section"
+              class="text-muted-foreground flex-grow truncate text-sm"
+            >
+              Ingrédients
+            </span>
+            <span class="text-muted-foreground ml-2">
+              <Icon
+                name="lucide:chevron-down"
+                class="h-4 w-4 transition-transform duration-200 group-open:rotate-180"
+              />
+            </span>
+          </div>
+        </summary>
+
+        <ScrollArea
+          client:load
+          className="mx-auto max-w-3xl"
+          data-toc-header-scroll
+        >
+          {groups.map((group: any) => (
+            <div class="max-h-[30vh]">
+              <span class="font-medium">{group.name}</span>
+              <ul
+                class="flex list-none flex-col px-4 pb-4"
+                id="mobile-table-of-contents"
+              >
+                {group.list.map((ingredient: Ingredient) => (
+                  <li class="text-sm border-b py-1 px-2">
+                    <div class="ingredient-item font-mono  flex items-center hover:bg-accent justify-between" data-slug={ingredient.slug}>
+                      <div class="flex items-center">
+                        <Icon name="lucide:circle-dashed" class="size-4 mr-3" />
+                        <span>{ingredient.name}</span><Icon name="lucide:chevron-right" class="size-4 mr-4 ml-1" />
+                      </div>
+                      <div class="qty">
+                        <span>{ingredient.quantity+" "}</span>
+                        <span>{ingredient.unit}</span>
+                      </div>
+                    </div>
+                    {ingredient.notes && (
+                      <div class="note text-foreground/50">
+                        <span>{ingredient.notes}</span>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          
+        </ScrollArea>
+      </details>
+    </div>
+  )
+}
+
+<script>
+  const HEADER_OFFSET = 102 + 36
+
+  class MobileTOCState {
+    progressCircle: HTMLElement | null = null
+    currentSectionText: HTMLElement | null = null
+    detailsElement: HTMLDetailsElement | null = null
+    listElement: HTMLElement | null = null
+    scrollArea: HTMLElement | null = null
+    headings: HTMLElement[] = []
+    regions: { id: string; start: number; end: number }[] = []
+    activeIds: string[] = []
+
+    reset() {
+      this.detailsElement = document.querySelector(
+        '#mobile-toc-container details',
+      )
+      this.listElement = document.getElementById('mobile-table-of-contents')
+      const tocContainer = document.getElementById('mobile-toc-container')
+      this.scrollArea =
+        tocContainer?.querySelector('[data-radix-scroll-area-viewport]') || null
+      this.headings = []
+      this.regions = []
+      this.activeIds = []
+    }
+  }
+
+  const state = new MobileTOCState()
+
+  class HeadingRegions {
+    static build() {
+      state.headings = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          '.prose h2, .prose h3, .prose h4, .prose h5, .prose h6',
+        ),
+      )
+
+      if (state.headings.length === 0) {
+        state.regions = []
+        return
+      }
+
+      state.regions = state.headings.map((heading, index) => {
+        const nextHeading = state.headings[index + 1]
+        return {
+          id: heading.id,
+          start: heading.offsetTop,
+          end: nextHeading ? nextHeading.offsetTop : document.body.scrollHeight,
+        }
+      })
+    }
+
+    static getVisibleIds(): string[] {
+      if (state.headings.length === 0) return []
+
+      const viewportTop = window.scrollY + HEADER_OFFSET
+      const viewportBottom = window.scrollY + window.innerHeight
+      const visibleIds = new Set<string>()
+
+      const isInViewport = (top: number, bottom: number) =>
+        (top >= viewportTop && top <= viewportBottom) ||
+        (bottom >= viewportTop && bottom <= viewportBottom) ||
+        (top <= viewportTop && bottom >= viewportBottom)
+
+      state.headings.forEach((heading) => {
+        const headingBottom = heading.offsetTop + heading.offsetHeight
+        if (isInViewport(heading.offsetTop, headingBottom)) {
+          visibleIds.add(heading.id)
+        }
+      })
+
+      state.regions.forEach((region) => {
+        if (region.start <= viewportBottom && region.end >= viewportTop) {
+          const heading = document.getElementById(region.id)
+          if (heading) {
+            const headingBottom = heading.offsetTop + heading.offsetHeight
+            if (
+              region.end > headingBottom &&
+              (headingBottom < viewportBottom || viewportTop < region.end)
+            ) {
+              visibleIds.add(region.id)
+            }
+          }
+        }
+      })
+
+      return Array.from(visibleIds)
+    }
+  }
+
+  class TOCHeaderScrollMask {
+    static update() {
+      if (!state.scrollArea) return
+
+      const { scrollTop, scrollHeight, clientHeight } = state.scrollArea
+      const threshold = 5
+      const isAtTop = scrollTop <= threshold
+      const isAtBottom = scrollTop >= scrollHeight - clientHeight - threshold
+
+      state.scrollArea.classList.toggle('mask-t-from-80%', !isAtTop)
+      state.scrollArea.classList.toggle('mask-b-from-80%', !isAtBottom)
+    }
+  }
+
+  class MobileTOCLinks {
+    static scrollToActive(activeHeadingId: string) {
+      if (!state.listElement) return
+
+      const activeItem = state.listElement.querySelector(
+        `[data-heading-id="${activeHeadingId}"]`,
+      )
+      if (!activeItem) return
+
+      const scrollContainer = state.scrollArea
+      if (!scrollContainer) return
+
+      const { top: containerTop, height: containerHeight } =
+        scrollContainer.getBoundingClientRect()
+      const { top: itemTop, height: itemHeight } =
+        activeItem.getBoundingClientRect()
+
+      const currentItemTop = itemTop - containerTop + scrollContainer.scrollTop
+      const targetScroll = Math.max(
+        0,
+        Math.min(
+          currentItemTop - (containerHeight - itemHeight) / 2,
+          scrollContainer.scrollHeight - scrollContainer.clientHeight,
+        ),
+      )
+
+      if (Math.abs(targetScroll - scrollContainer.scrollTop) > 5) {
+        scrollContainer.scrollTop = targetScroll
+      }
+    }
+
+    static setupInteraction() {
+      if (!state.listElement) return
+
+      state.listElement.querySelectorAll('.mobile-toc-item').forEach((item) => {
+        item.addEventListener('click', () => {
+          if (state.detailsElement) state.detailsElement.open = false
+        })
+      })
+
+      if (state.scrollArea) {
+        state.scrollArea.addEventListener(
+          'scroll',
+          () => TOCHeaderScrollMask.update(),
+          { passive: true },
+        )
+      }
+
+      if (state.detailsElement) {
+        state.detailsElement.addEventListener('toggle', () => {
+          if (state.detailsElement?.open) {
+            setTimeout(TOCHeaderScrollMask.update, 100)
+          }
+        })
+      }
+    }
+  }
+
+  class MobileTOCController {
+    static handleScroll() {
+      const newActiveIds = HeadingRegions.getVisibleIds()
+
+      if (JSON.stringify(newActiveIds) !== JSON.stringify(state.activeIds)) {
+        state.activeIds = newActiveIds
+      }
+    }
+
+    static handleResize() {
+      HeadingRegions.build()
+
+      const newActiveIds = HeadingRegions.getVisibleIds()
+      if (JSON.stringify(newActiveIds) !== JSON.stringify(state.activeIds)) {
+        state.activeIds = newActiveIds
+      }
+    }
+
+    static init() {
+      state.reset()
+      HeadingRegions.build()
+
+      if (!state.currentSectionText) return
+
+      state.activeIds = HeadingRegions.getVisibleIds()
+
+      MobileTOCLinks.setupInteraction()
+      window.addEventListener('scroll', this.handleScroll, { passive: true })
+      window.addEventListener('resize', this.handleResize, { passive: true })
+    }
+
+    static cleanup() {
+      window.removeEventListener('scroll', this.handleScroll)
+      window.removeEventListener('resize', this.handleResize)
+      state.activeIds = []
+      state.headings = []
+      state.regions = []
+    }
+  }
+
+  document.addEventListener('astro:page-load', () => MobileTOCController.init())
+  document.addEventListener('astro:after-swap', () => {
+    MobileTOCController.cleanup()
+    MobileTOCController.init()
+  })
+  document.addEventListener('astro:before-swap', () =>
+    MobileTOCController.cleanup(),
+  )
+</script>

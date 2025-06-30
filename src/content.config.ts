@@ -34,6 +34,7 @@ const recipes = defineCollection({
       description: z.string(),
       date: z.coerce.date(),
       image: image().optional(),
+      ingredients: z.string(),
       tags: z.array(z.string()).optional(),
       draft: z.boolean().optional(),
       order: z.number().optional(),

@@ -3,7 +3,7 @@ import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PostHead from '@/components/RecipesPostHead.astro'
 import PostNavigation from '@/components/RecipesPostNavigation.astro'
 import SubpostsHeader from '@/components/RecipesSubpostsHeader.astro'
-import TOCHeader from '@/components/TOCHeader.astro'
+import TOCHeader from '@/components/RecipesTOCHeader.astro'
 import TOCSidebar from '@/components/RecipesTOCSidebar.astro'
 import SubpostsSidebar from '@/components/RecipesSubpostsSidebar.astro'
 import { badgeVariants } from '@/components/ui/badge'
@@ -20,7 +20,8 @@ import {
   hasSubposts,
   isSubpost,
   getTOCSections,
-  basePath
+  basePath,
+getIngredients
 } from '@/lib/recipes-utils'
 import { formatDate } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
@@ -62,8 +63,9 @@ const combinedReadingTime =
     : null
 
 const tocSections = await getTOCSections(currentPostId)
----
 
+const ingredients = await getIngredients(currentPostId);
+---
 <Layout>
   <PostHead slot="head" post={post} />
   {
@@ -80,7 +82,7 @@ const tocSections = await getTOCSections(currentPostId)
         isCurrentSubpost &&
         headings.length === 1 &&
         headings[0].text === post.data.title
-      ) && <TOCHeader slot="table-of-contents" headings={headings} />
+      ) && <TOCHeader ingredientsList={ingredients as any} currentPostId={currentPostId} slot="table-of-contents" headings={headings} />
   }
 
   <section
@@ -197,11 +199,11 @@ const tocSections = await getTOCSections(currentPostId)
 
     {
       tocSections.length > 0 && (
-        <TOCSidebar sections={tocSections} currentPostId={currentPostId} />
+        <TOCSidebar ingredientsList={ingredients as any} sections={tocSections} currentPostId={currentPostId} />
       )
     }
 
-    <article class="prose col-start-2 max-w-none">
+    <article class="prose col-start-2 max-w-none" data-ingredients={JSON.stringify(ingredients)}>
       <Content />
     </article>
 
@@ -241,6 +243,45 @@ const tocSections = await getTOCSections(currentPostId)
     document.addEventListener('astro:page-load', () => {
       const scrollToTopButton = document.getElementById('scroll-to-top')
       const footer = document.querySelector('footer')
+      const article = document.querySelector('article')
+      
+      if (!article) return
+      
+      const groups = JSON.parse(article.dataset.ingredients || 'null').ingredients;
+      const allIngredients = groups.flatMap(group => group.list);
+      const sortedIngredients = allIngredients.slice().sort((a, b) => b.name.length - a.name.length);
+
+      const ingredientNames = sortedIngredients.map(i => i.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+      const regex = new RegExp(`\\b(${ingredientNames.join('|')})\\b`, 'gi');
+
+      function highlightTextInNode(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const text = node.textContent;
+          if (regex.test(text)) {
+            const highlightedText = text.replace(regex, (match) => {
+              const ingredient = sortedIngredients.find(i => i.name.toLowerCase() === match.toLowerCase());
+              if (!ingredient) return match;
+              return `<kbd class="ingredient-item bg-accent/25 text-sm" data-slug="${ingredient.slug}">${match}</kbd>`;
+            });
+
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = highlightedText;
+            const parent = node.parentNode;
+            const fragment = document.createDocumentFragment();
+            while (tempDiv.firstChild) {
+              fragment.appendChild(tempDiv.firstChild);
+            }
+            parent.replaceChild(fragment, node);
+          }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          if (node.tagName === 'SCRIPT' || node.tagName === 'STYLE' || node.tagName === 'KBD') {
+            return;
+          }
+          Array.from(node.childNodes).forEach(child => highlightTextInNode(child));
+        }
+      }
+
+      highlightTextInNode(article)
 
       if (scrollToTopButton && footer) {
         scrollToTopButton.addEventListener('click', () => {
@@ -257,6 +298,21 @@ const tocSections = await getTOCSections(currentPostId)
           )
         })
       }
+
+      document.querySelectorAll('.ingredient-item').forEach(trigger => {
+          const ref = trigger.getAttribute('data-slug');
+
+          trigger.addEventListener('mouseenter', () => {
+            document.querySelectorAll(`[data-slug='${ref}']`).forEach(el => {
+              el.classList.add('hovered')
+            })
+          })
+          trigger.addEventListener('mouseleave', () => {
+            document.querySelectorAll(`[data-slug="${ref}"]`).forEach(el => {
+              el.classList.remove('hovered');
+            });
+          });
+      })
     })
   </script>
 </Layout>

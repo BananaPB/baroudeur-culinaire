@@ -49,3 +49,16 @@ export type TOCSection = {
   headings: TOCHeading[]
   subpostId?: string
 }
+
+export type Ingredient = {
+  name: string 
+  quantity: number & { __positive: true }
+  unit: string
+  notes?: string
+  slug?: string
+}
+
+export type IngredientsList = {
+  ingredients: Ingredient[],
+  total: number & { __positive: true }
+}

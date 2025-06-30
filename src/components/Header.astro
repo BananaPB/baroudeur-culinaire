@@ -10,7 +10,7 @@ import logo from '../../public/static/logo.png'
 <header transition:persist>
   <div class="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3">
     <Link href="/" class="flex shrink-0 items-center justify-center gap-3">
-      <Image src={logo} alt="Logo" class="size-15 sm:size-15" />
+      <Image src={logo} alt="Logo" class="size-15 sm:size-15 rounded-md" />
       <span class="hidden h-full text-lg font-medium min-[300px]:block"
         >{SITE.title}</span
       >
@@ -22,16 +22,16 @@ import logo from '../../public/static/logo.png'
             <div class="relative group">
               <Link
                 href={item.href}
-                class="text-foreground/60 hover:text-foreground/80 capitalize transition-colors"
+                class="text-foreground/70 hover:text-foreground capitalize transition-colors"
               >
                 {item.label}
               </Link>
               {item.items && item.items.length > 0 && (
-                <div class="absolute left-0 top-full z-10 hidden min-w-[10rem] bg-secondary flex-col rounded py-2 shadow-lg group-hover:flex">
+                <div class="absolute left-0 top-full z-10 hidden min-w-[10rem] bg-white flex-col rounded py-2 shadow-lg group-hover:flex dark:bg-secondary">
                   {item.items.map((sub) => (
                     <Link
                       href={item.href + sub.href}
-                      class="block px-4 py-2 text-sm text-foreground/70 hover:bg-primary hover:text-foreground"
+                      class="block px-4 py-2 text-sm text-foreground/70 hover:text-foreground hover:bg-accent/50 dark:bg-secondary dark:hover:bg-accent"
                     >
                       {sub.label}
                     </Link>

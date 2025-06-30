@@ -93,7 +93,6 @@
   }
 }
 
-/* Example styles for dropdown */
-.group:hover .group-hover\:flex {
-  display: flex !important;
+.ingredient-item.hovered{
+  background-color: var(--accent);
 }
