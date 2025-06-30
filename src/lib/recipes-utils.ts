@@ -288,48 +288,43 @@ export async function getSortedTagsByCategory(category: string): Promise<
     })
 }
 
-export interface Ingredient {
-  name: string
-  quantity: number
-  unit: string
-  notes?: string
-  slug?: string
-}
-
-export interface RecipeIngredients {
-  ingredients: Ingredient[]
-  total: number
-}
-
-function CreateJsonPath(path: string): string {
-  if (path.startsWith('./')) {
-    return path.slice(2)
-  }
-  if (path.startsWith('/')) {
-    return path.slice(1)
-  }
-  return path
-}
-
 export const ingredientsJSON = import.meta.glob(
   'src/content/recipes/**/ingredients.json',
   {as: 'json'}
 )
 
-export async function getIngredients(currentPostId: string): Promise<RecipeIngredients | null> {
+export type Ingredient = {
+  name: string 
+  quantity: number & { __positive: true }
+  unit: string
+  notes?: string
+  slug?: string
+}
+
+export type Group = {
+  name: string 
+  list: Ingredient[],
+}
+
+export type IngredientsList = {
+  ingredients: Group[],
+  total: number & { __positive: true }
+}
+
+export async function getIngredients(currentPostId: string): Promise<IngredientsList | null> {
     const matchPath = Object.keys(ingredientsJSON).find(path =>
       path.includes(`/recipes/${currentPostId}/ingredients.json`)
     );
     const ingredients = matchPath ? await ingredientsJSON[matchPath]() : null;
 
-    (ingredients as any)?.ingredients?.forEach((group: any, i: number) => {
-      group.list.forEach((e: any, i: number) => {
+    (ingredients as any)?.ingredients?.forEach((group: Group) => {
+      group.list.forEach((e: Ingredient) => {
         const slug = slugify(e.name)
         e.slug = slug
       })
     });
     
-    return ingredients as RecipeIngredients | null
+    return ingredients as IngredientsList | null
 }
 
 /**

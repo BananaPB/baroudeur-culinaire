@@ -1,12 +1,12 @@
 ---
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { cn, getHeadingMargin, type IngredientsList } from '@/lib/utils'
+import type { IngredientsList, Ingredient, Group } from '@/lib/recipes-utils'
 import type { MarkdownHeading } from 'astro'
 import { Icon } from 'astro-icon/components'
 
 type Props = {
-  headings: MarkdownHeading[],
-  ingredientsList: IngredientsList[],
+  headings: MarkdownHeading[]
+  ingredientsList: IngredientsList
   currentPostId: string
 }
 
@@ -46,7 +46,7 @@ const groups = ingredientsList.ingredients
           className="mx-auto max-w-3xl"
           data-toc-header-scroll
         >
-          {groups.map((group: any) => (
+          {groups.map((group: Group) => (
             <div class="max-h-[30vh]">
               <span class="font-medium">{group.name}</span>
               <ul

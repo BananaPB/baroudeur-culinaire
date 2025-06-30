@@ -24,6 +24,7 @@ import {
 getIngredients
 } from '@/lib/recipes-utils'
 import { formatDate } from '@/lib/utils'
+import type { IngredientsList } from '@/lib/recipes-utils'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
 import { render } from 'astro:content'
@@ -82,7 +83,7 @@ const ingredients = await getIngredients(currentPostId);
         isCurrentSubpost &&
         headings.length === 1 &&
         headings[0].text === post.data.title
-      ) && <TOCHeader ingredientsList={ingredients as any} currentPostId={currentPostId} slot="table-of-contents" headings={headings} />
+      ) && <TOCHeader ingredientsList={ingredients as IngredientsList} currentPostId={currentPostId} slot="table-of-contents" headings={headings} />
   }
 
   <section
@@ -199,7 +200,7 @@ const ingredients = await getIngredients(currentPostId);
 
     {
       tocSections.length > 0 && (
-        <TOCSidebar ingredientsList={ingredients as any} sections={tocSections} currentPostId={currentPostId} />
+        <TOCSidebar ingredientsList={ingredients as IngredientsList} sections={tocSections} currentPostId={currentPostId} />
       )
     }
 
@@ -240,6 +241,8 @@ const ingredients = await getIngredients(currentPostId);
   </Button>
 
   <script>
+    import type { Ingredient, Group } from "@/lib/recipes-utils"
+
     document.addEventListener('astro:page-load', () => {
       const scrollToTopButton = document.getElementById('scroll-to-top')
       const footer = document.querySelector('footer')
@@ -248,25 +251,32 @@ const ingredients = await getIngredients(currentPostId);
       if (!article) return
       
       const groups = JSON.parse(article.dataset.ingredients || 'null').ingredients;
-      const allIngredients = groups.flatMap(group => group.list);
-      const sortedIngredients = allIngredients.slice().sort((a, b) => b.name.length - a.name.length);
+      const allIngredients = groups.flatMap((group: Group) => group.list);
+      const sortedIngredients = allIngredients.slice().sort(
+        (a: Ingredient, b: Ingredient) => b.name.length - a.name.length
+      );
 
-      const ingredientNames = sortedIngredients.map(i => i.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+      const ingredientNames = sortedIngredients.map((i: Ingredient) => i.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
       const regex = new RegExp(`\\b(${ingredientNames.join('|')})\\b`, 'gi');
 
-      function highlightTextInNode(node) {
+      function highlightTextInNode(node: Node) {
         if (node.nodeType === Node.TEXT_NODE) {
-          const text = node.textContent;
+          const text = node.textContent!;
           if (regex.test(text)) {
-            const highlightedText = text.replace(regex, (match) => {
-              const ingredient = sortedIngredients.find(i => i.name.toLowerCase() === match.toLowerCase());
-              if (!ingredient) return match;
-              return `<kbd class="ingredient-item bg-accent/25 text-sm" data-slug="${ingredient.slug}">${match}</kbd>`;
-            });
+            const highlightedText = text.replace(
+              regex,
+              (match: string): string => {
+                const ingredient = sortedIngredients.find(
+                  (i: Ingredient) => i.name.toLowerCase() === match.toLowerCase()
+                );
+                if (!ingredient) return match;
+                return `<kbd class="ingredient-item bg-accent/25 text-sm" data-slug="${ingredient.slug}">${match}</kbd>`;
+              }
+            );
 
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = highlightedText;
-            const parent = node.parentNode;
+            const parent = node.parentNode!;
             const fragment = document.createDocumentFragment();
             while (tempDiv.firstChild) {
               fragment.appendChild(tempDiv.firstChild);
@@ -274,7 +284,11 @@ const ingredients = await getIngredients(currentPostId);
             parent.replaceChild(fragment, node);
           }
         } else if (node.nodeType === Node.ELEMENT_NODE) {
-          if (node.tagName === 'SCRIPT' || node.tagName === 'STYLE' || node.tagName === 'KBD') {
+          if (
+            (node as Element).tagName === 'SCRIPT' ||
+            (node as Element).tagName === 'STYLE' ||
+            (node as Element).tagName === 'KBD'
+          ) {
             return;
           }
           Array.from(node.childNodes).forEach(child => highlightTextInNode(child));
