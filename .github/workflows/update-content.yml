@@ -1,0 +1,39 @@
+name: Update Content from Obsidian
+
+on:
+  workflow_dispatch: # déclenchement manuel, tu pourras l'automatiser plus tard
+
+jobs:
+  update-content:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Astro repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Update submodule content
+        run: |
+          git submodule update --remote --merge
+          git add src/content
+
+      - name: Normalize content folder names
+        run: npm run normalize:folders
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff --cached --quiet || git commit -m "Update content from Obsidian + normalize folders"
+          git push

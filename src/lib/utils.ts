@@ -49,3 +49,10 @@ export type TOCSection = {
   headings: TOCHeading[]
   subpostId?: string
 }
+
+export type Social = {
+  name: string,
+  description: string,
+  image: ImageMetadata,
+  link: string
+}

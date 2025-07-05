@@ -1,12 +1,10 @@
 ---
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
-import SocialCard from '@/components/SocialCard.astro'
 import Layout from '@/layouts/Layout.astro'
 import Link from '@/components/Link.astro'
-import { getCollection } from 'astro:content'
+import Socials from '@/components/Socials.astro'
 
-const allSocials = await getCollection('socials')
 ---
 
 <Layout class="max-w-3xl">
@@ -39,9 +37,7 @@ const allSocials = await getCollection('socials')
           Également je suis toujours ouvert à l'échange sur des sujets qui m'intéressent. Ainsi si quelqu'un souhaite me contacter dans ce but ou dans celui de 
           me signaler une erreur (de fond ou de forme) je suis présent également sur le net :
         </p>
-        <div class="flex flex-col gap-4 mt-5">
-          {allSocials.map((social) => <SocialCard social={social} />)}
-        </div>
+        <Socials />
       </div>
       <div>
         <p>

@@ -1,0 +1,41 @@
+---
+import Link from '@/components/Link.astro'
+import { Image } from 'astro:assets'
+import SocialCard from './SocialCard.astro'
+import type { Social } from '@/lib/utils'
+import socialInstagram from '../../public/static/social-instagram.png';
+import socialTiktok from '../../public/static/social-tiktok.png';
+import socialBluesky from '../../public/static/social-bluesky.png';
+import socialLinkedin from '../../public/static/social-linkedin.png';
+
+const socials: Social[] = [
+  {
+    name: "Instagram",
+    description: "C'est le réseau social ou j'aimerais être le plus actif. J'y poste essentiellement du contenu qui tourne autour de la pâtisserie avec une prédominence de la pâtisserie sans produits d'origine animale.",
+    image: socialInstagram,
+    link: "https://www.instagram.com/baroudeurculinaire/"
+  },
+  {
+    name: "Tiktok",
+    description: "Pas super actif pour le moment, mais j'aimerais y remédier en 2025.",
+    image: socialTiktok,
+    link: "https://www.tiktok.com/@baroudeurculinaire"
+  },
+  {
+    name: "Bluesky",
+    description: "Au cas où ce réseau deviendrait actif un jour.",
+    image: socialBluesky,
+    link: "https://bsky.app/profile/lerigolo.cool"
+  },
+  {
+    name: "Linkedin",
+    description: "Plus le temps passe plus ce site me semble étrange, mais il parait que c'est bien d'y être alors j'essaye d'y rester un minimum actif pour le bien de mes activités professionelles.",
+    image: socialLinkedin,
+    link: "https://www.linkedin.com/in/nicolas-abadie-621520264/"
+  }
+]
+---
+
+<div class="flex flex-col gap-4 mt-5">
+  {socials.map((social, i) => <SocialCard social={social} key={i} />)}
+</div>

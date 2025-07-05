@@ -1,29 +1,33 @@
 ---
 import Link from '@/components/Link.astro'
 import { Image } from 'astro:assets'
-import type { CollectionEntry } from 'astro:content'
+import type { Social } from '@/lib/utils'
 
 interface Props {
-  social: CollectionEntry<'socials'>
+  social: Social,
+  key: number
 }
 
-const { social } = Astro.props
+const { social, key } = Astro.props
+
+console.log(social)
 ---
 
 <div
   class="hover:bg-accent/50 rounded-xl border p-4 transition-colors duration-300 ease-in-out bg-white dark:bg-secondary dark:hover:bg-accent"
+  id={"social-"+`${key}`}
 >
   <Link
-    href={social.data.link}
+    href={social.link}
     class="flex flex-col gap-4 sm:flex-row"
     external
   >
     {
-      social.data.image && (
+      social.image && (
         <div class="max-w-3xs sm:shrink-0">
           <Image
-            src={social.data.image}
-            alt={social.data.name}
+            src={social.image}
+            alt={social.name}
             width={1200}
             height={630}
             class="object-cover"
@@ -33,10 +37,10 @@ const { social } = Astro.props
     }
     <div class="grow">
       <h3 class="mb-1 text-lg font-medium">
-        {social.data.name}
+        {social.name}
       </h3>
       <p class="text-muted-foreground mb-2 text-sm">
-        {social.data.description}
+        {social.description}
       </p>
     </div>
   </Link>

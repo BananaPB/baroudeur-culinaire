@@ -15,17 +15,6 @@ const blog = defineCollection({
     }),
 })
 
-const socials = defineCollection({
-  loader: file("src/content/socials/data.json"),
-  schema: ({ image }) =>
-    z.object({
-      name: z.string(),
-      description: z.string(),
-      image: image().optional(),
-      link: z.string().url(),
-    }),
-});
-
 const recipes = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/Recettes' }),
   schema: ({ image }) =>
@@ -55,4 +44,4 @@ const theory = defineCollection({
     }),
 })
 
-export const collections = { blog, socials, recipes, theory }
+export const collections = { blog, recipes, theory }
