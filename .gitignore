@@ -1,6 +1,7 @@
 dist/
 .astro/
 node_modules/
+content/*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
