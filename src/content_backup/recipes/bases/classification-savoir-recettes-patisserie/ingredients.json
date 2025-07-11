@@ -35,7 +35,8 @@
           "unit": "grammes",
           "notes": "warm"
         }
-      ]
+      ],
+      "total":250
     },
     {
       "name": "Ganache chocolat",
@@ -63,7 +64,8 @@
           "quantity": 100,
           "unit": "grammes"
         }
-      ]
+      ],
+      "total":248
     }
   ],
   "total": 993.8

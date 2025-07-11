@@ -7,7 +7,6 @@ import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import { getAllPosts, groupPostsByYear } from '@/lib/blog-utils'
 import type { PaginateFunction } from 'astro'
-import Search from '@/components/Search.astro'
 
 export async function getStaticPaths({
   paginate,

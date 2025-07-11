@@ -57,6 +57,7 @@
   --primary: oklch(0.7251 0.1376 53.82);
   --primary-foreground: oklch(0.1353 0.0288 70.3);
   --secondary: oklch(0.8191 0.0835 73.37);
+  --secondary-muted: oklch(0.8191 0.0835 73.37 / 25%);
   --secondary-foreground: oklch(0.1353 0.0288 70.3);
   --muted: oklch(0.8621 0.1663 85.24);
   --muted-foreground: oklch(0.1353 0.0288 70.3);
@@ -73,6 +74,7 @@
   --primary: oklch(0.5668 0.1395 50.16);
   --primary-foreground: oklch(0.116 0.0247 73.07);
   --secondary: oklch(0.4668 0.0868 69.18);
+  --secondary-muted: oklch(0.4668 0.0868 69.18 / 25%);
   --secondary-foreground: oklch(0.9728 0.0152 61.35);
   --muted: oklch(0.5706 0.1174 75.42);
   --muted-foreground: oklch(0.9728 0.0152 61.35);
@@ -95,4 +97,104 @@
 
 .ingredient-item.hovered{
   background-color: var(--accent);
+}
+
+article .temp{
+  color: var(--color-red-500);
+  background-color: var(--color-red-200);
+  border: 1px solid var(--color-red-500);
+  border-radius: 6px;
+  padding: 2px 4px;
+  margin: 0 2px;
+  vertical-align: middle;
+  line-height: normal;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  font-size: .9em;
+  font-family: var(--default-mono-font-family);
+}
+
+article .time{
+  color: var(--color-blue-500);
+  background-color: var(--color-blue-200);
+  border: 1px solid var(--color-blue-500);
+  border-radius: 6px;
+  padding: 2px 4px;
+  margin: 0 2px;
+  vertical-align: middle;
+  line-height: normal;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  font-size: .9em;
+  font-family: var(--default-mono-font-family);
+}
+
+article sup{top: -1em;}
+article sup a{
+  text-decoration: none;
+  color: var(--primary);
+  padding: 2px 2px;
+  border-radius: 4px;
+  font-weight: 400;
+  font-size: .9em;
+}
+article sup a:hover{background-color: var(--primary); color: var(--primary-foreground);}
+article sup a::before{content:"[ "}
+article sup a::after{content:" ]"}
+
+article section.footnotes::before{content: "Références :"; font-weight: 500; font-size: 1.2em;}
+article section.footnotes{
+  background-color: var(--secondary);
+  padding: .5em 1em; 
+  border-radius: 8px;
+  border: solid 1px var(--border);
+}
+article section.footnotes a::before{content:"[ "}
+article section.footnotes a::after{content:" ]"}
+article section.footnotes a[target=_blank]{text-decoration: underline;}
+article section.footnotes a{
+  padding: 2px 2px;
+  border-radius: 4px;
+  font-weight: 400;
+  font-size: .9em;
+  color: var(--foreground);
+}
+
+article a:hover{background-color: var(--primary); color: var(--primary-foreground);}
+article a{
+  padding: 2px .5em;
+  border-radius: 4px;
+  font-weight: 400;
+  color: var(--primary);
+  text-decoration-color: var(--primary);
+}
+article a:not([target=_blank]){text-decoration: none;}
+article a[target=_blank]::after{content: "[→]"; font-size: .7em; vertical-align: middle; margin-left: .5em;}
+article a[target=_blank]:hover{color: var(--primary-foreground);}
+
+article span.highlighted{background-color: var(--accent); padding: 0 .25em;}
+
+article blockquote em{opacity: .5;}
+
+article table{
+  background-color: white;
+  border: 2px solid var(--secondary);
+  border-radius: 8px;
+  box-shadow: 6px 6px 0 var(--secondary);
+}
+article table thead{color: var(--foreground);}
+article table tr, article table thead{border: none;}
+article table td:not(:first-child), article table th:not(:first-child){border-left: 1px solid var(--secondary);}
+article table tbody tr:nth-child(odd){background-color: var(--secondary-muted);}
+
+[data-theme='dark']{
+  article table{
+    background-color: var(--foreground);
+    color: var(--background);
+  }
+  article table thead{color: var(--background);}
+  article table td{color: var(--background);}
+  article table td strong{color: var(--background);}
 }

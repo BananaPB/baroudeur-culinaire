@@ -192,6 +192,14 @@ export async function getPostReadingTime(postId: string): Promise<string> {
   return readingTime(wordCount)
 }
 
+export async function getPostPortion(ingredients: IngredientsList | null): Promise<string> {
+  if(!ingredients){return ""};
+
+  const portion = ingredients.portion
+  const unit = ingredients.portion_unit
+  return "pour "+portion+unit
+}
+
 export async function getCombinedReadingTime(postId: string): Promise<string> {
   const post = await getPostById(postId)
   if (!post) return readingTime(0)
@@ -304,11 +312,13 @@ export type Ingredient = {
 export type Group = {
   name: string 
   list: Ingredient[],
+  total: number & { __positive: true }
 }
 
 export type IngredientsList = {
   ingredients: Group[],
-  total: number & { __positive: true }
+  portion: number & { __positive: true },
+  portion_unit : string
 }
 
 export async function getIngredients(currentPostId: string): Promise<IngredientsList | null> {

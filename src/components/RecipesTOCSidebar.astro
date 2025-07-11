@@ -28,7 +28,7 @@ const groups = ingredientsList.ingredients
       >
         {groups.map((group: Group) => (
           <div class="flex flex-col gap-2 px-4 mb-2">
-            <span class="text-lg font-medium">{group.name}</span>
+            <div class="text-lg font-medium flex items-baseline justify-between">{group.name}<span class="text-base text-foreground/50">({group.total+"g"})</span></div>
               <ul class="flex list-none flex-col gap-y-2">
                 {group.list.map((ingredient: Ingredient) => (
                   <li class="mb-1">

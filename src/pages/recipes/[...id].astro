@@ -14,14 +14,13 @@ import {
   getAllPostsAndSubposts,
   getParentId,
   getSubpostCount,
-  getPostReadingTime,
-  getCombinedReadingTime,
   getParentPost,
   hasSubposts,
   isSubpost,
   getTOCSections,
   basePath,
-getIngredients
+getIngredients,
+getPostPortion
 } from '@/lib/recipes-utils'
 import { formatDate } from '@/lib/utils'
 import type { IngredientsList } from '@/lib/recipes-utils'
@@ -57,15 +56,12 @@ const hasChildPosts = await hasSubposts(currentPostId)
 const subpostCount = !isCurrentSubpost
   ? await getSubpostCount(currentPostId)
   : 0
-const postReadingTime = await getPostReadingTime(currentPostId)
-const combinedReadingTime =
-  hasChildPosts && !isCurrentSubpost
-    ? await getCombinedReadingTime(currentPostId)
-    : null
 
 const tocSections = await getTOCSections(currentPostId)
 
 const ingredients = await getIngredients(currentPostId);
+const portion = await getPostPortion(ingredients);
+
 ---
 <Layout>
   <PostHead slot="head" post={post} />
@@ -142,24 +138,15 @@ const ingredients = await getIngredients(currentPostId);
         <div
           class="flex w-full items-center justify-center gap-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0"
         >
+          <Icon name="lucide:calendar" class="size-4" />
           <span>{formatDate(post.data.date)}</span>
         </div>
 
         <div
           class="flex w-full items-center justify-center gap-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0"
         >
-          <span>
-            {postReadingTime}
-            {
-              combinedReadingTime &&
-                combinedReadingTime !== postReadingTime && (
-                  <span class="text-muted-foreground">
-                    {' '}
-                    ({combinedReadingTime} total)
-                  </span>
-                )
-            }
-          </span>
+          <Icon name="lucide:sigma" class="size-4" />
+          {portion}
         </div>
 
           {

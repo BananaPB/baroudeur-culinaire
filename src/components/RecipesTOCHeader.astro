@@ -1,7 +1,6 @@
 ---
 import { ScrollArea } from '@/components/ui/scroll-area'
 import type { IngredientsList, Ingredient, Group } from '@/lib/recipes-utils'
-import type { MarkdownHeading } from 'astro'
 import { Icon } from 'astro-icon/components'
 
 type Props = {
@@ -47,7 +46,8 @@ const groups = ingredientsList.ingredients
         >
           {groups.map((group: Group) => (
             <div class="max-h-[30vh]">
-              <span class="font-medium">{group.name}</span>
+              <div class="font-medium flex justify-between"><span>{group.name}</span><span class="text-sm text-foreground/50">({group.total+"g"})</span></div>
+              {/* <span class="font-medium">{group.name}</span> */}
               <ul
                 class="flex list-none flex-col px-4 pb-4"
                 id="mobile-table-of-contents"

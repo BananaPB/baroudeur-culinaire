@@ -1,0 +1,198 @@
+---
+title: Markdown cheat sheet
+description: >-
+  Liste des fonctionnalité de mises en forme et des composants du markdown
+  convertis de Obsidian à Astro.
+date: '2025-07-06'
+tags: []
+draft: false
+image: ../../assets/95bb5a7fde6c478e3c38e57992570116_MD5.jpeg
+---
+import img_a248daeefd9da37e76b3c2d47139374f_MD5 from '../../assets/a248daeefd9da37e76b3c2d47139374f_MD5.jpg'
+import Callout from '@/components/Callout.astro'
+import { Image } from 'astro:assets'
+
+J'ai fait le choix d'écrire tous mes articles avec [Obsidian](https://obsidian.md/), un éditeur de fichiers au format markdown (.md). Mon blog étant mis en ligne avec [Astro](https://astro.build/), certaines fonctionnalités d'Obsidian ne se transposent pas correctement de façon native. Le but étant d'avoir un workflow simple de bout en bout, j'ai dû me résoudre à écrire quelques bouts de code afin de faire la conversion de l'un à l'autre de manière automatique.
+
+Cette page est simplement une référence qui liste toutes les fonctionnalités de mise en page dans le but de tester le bon affichage des articles par la suite.
+
+# Textes
+
+Ceci est un paragraphe.
+Ceci est un autre paragraphe.
+
+Ceci est un dernier paragraphe.
+
+# Ceci est un titre n°1
+
+## Ceci est un titre n°2
+
+### Ceci est un titre n°3
+
+#### Ceci est un titre n°4
+
+##### Ceci est un titre n°5
+
+###### Ceci est un titre n°6
+
+***
+
+# Formatage
+
+**Texte en gras**
+
+*Texte en italique*
+
+\~~Texte barré~~
+
+<span class="highlighted">Texte surligné</span>
+
+**Texte en gras avec une partie *en italique***
+
+***Texte en gras ET en italique***
+
+***
+
+# Liens
+
+\[\[Classification du savoir et des recettes en pâtisserie|Lien interne]] *(ne fonctionne pas pour le moment)*
+
+[Lien vers un site extérieur](https://google.com)
+
+# Images
+
+![](https://history-computer.com/ModernComputer/Basis/images/Engelbart.jpg)
+
+> Photo de **Douglas Carl Engelbart**, importée depuis une source externe.
+
+<Image src={img_a248daeefd9da37e76b3c2d47139374f_MD5} alt="Image" width={600} height={200} />
+>Photo de **Douglas Carl Engelbart**, importée localement et redimensionnée.
+
+# Callouts
+
+> Human beings face ever more complex and urgent problems, and their effectiveness in dealing with these problems is a matter that is critical to the stability and continued progress of society.
+> *- Doug Engelbart, 1961*
+
+<Callout variant="info">
+Human beings face ever more complex and urgent problems, and their effectiveness in dealing with these problems is a matter that is critical to the stability and continued progress of society.
+</Callout>
+
+<Callout variant="note">
+Human beings face ever more complex and urgent problems, and their effectiveness in dealing with these problems is a matter that is critical to the stability and continued progress of society.
+</Callout>
+
+<Callout variant="abstract">
+Human beings face ever more complex and urgent problems, and their effectiveness in dealing with these problems is a matter that is critical to the stability and continued progress of society.
+</Callout>
+
+<Callout variant="todo">
+Human beings face ever more complex and urgent problems, and their effectiveness in dealing with these problems is a matter that is critical to the stability and continued progress of society.
+</Callout>
+
+<Callout variant="tip">
+Human beings face ever more complex and urgent problems, and their effectiveness in dealing with these problems is a matter that is critical to the stability and continued progress of society.
+</Callout>
+
+<Callout variant="success">
+Human beings face ever more complex and urgent problems, and their effectiveness in dealing with these problems is a matter that is critical to the stability and continued progress of society.
+</Callout>
+
+<Callout variant="question">
+Human beings face ever more complex and urgent problems, and their effectiveness in dealing with these problems is a matter that is critical to the stability and continued progress of society.
+</Callout>
+
+<Callout variant="warning">
+Human beings face ever more complex and urgent problems, and their effectiveness in dealing with these problems is a matter that is critical to the stability and continued progress of society.
+</Callout>
+
+<Callout variant="failure">
+Human beings face ever more complex and urgent problems, and their effectiveness in dealing with these problems is a matter that is critical to the stability and continued progress of society.
+</Callout>
+
+<Callout variant="danger">
+Human beings face ever more complex and urgent problems, and their effectiveness in dealing with these problems is a matter that is critical to the stability and continued progress of society.
+</Callout>
+
+<Callout variant="bug">
+Human beings face ever more complex and urgent problems, and their effectiveness in dealing with these problems is a matter that is critical to the stability and continued progress of society.
+</Callout>
+
+<Callout variant="example">
+Human beings face ever more complex and urgent problems, and their effectiveness in dealing with these problems is a matter that is critical to the stability and continued progress of society.
+</Callout>
+
+<Callout variant="quote">
+Human beings face ever more complex and urgent problems, and their effectiveness in dealing with these problems is a matter that is critical to the stability and continued progress of society.
+</Callout>
+
+# Listes
+
+* Premier item
+* Deuxième item
+* Troisième item
+
+1. Premier item
+2. Deuxième item
+3. Troisième item
+
+* \[x] Tâche complétée.
+
+* \[ ] Tâche incomplète.
+
+* \[x] Task item 1
+  * \[ ] Subtask 1
+
+* \[ ] Task item 2
+  * \[x] Subtask 1
+
+# Code
+
+Le texte placé entre des `backticks` dans une ligne sera formaté comme du code.
+
+Trois `backticks` forment un bloc de code
+
+```
+cd ~/Desktop
+```
+
+Trois `backticks` suivis du langage permettent d'activer la *color syntax*
+
+```js
+function fancyAlert(arg) {
+  if(arg) {
+    $.facebox({div:'#foo'})
+  }
+}
+```
+
+# Footnotes
+
+Lorem ipsum dolor sit amet. \[^1]
+
+Double référence dans un texte.\[^2]\[^3]
+
+\[^1]: Ceci est une *footnote*.
+\[^2]: Les *footnotes* sont des "références", une sorte de note de bas de page.
+\[^3]: Elles sont utiles pour ajouter une source, une info complémentaire ou du contexte.
+
+# Caractères spéciaux
+
+\*Les caractères précédés d'un "\\" ne seront pas utilisés pour formater le texte\*
+
+# Tableaux
+
+| First name | Last name |
+| ---------- | --------- |
+| Max        | Planck    |
+| Marie      | Curie     |
+| Albert     | Einstein  |
+
+# Latex
+
+$$
+\begin{vmatrix}a & b\\
+c & d
+\end{vmatrix}=ad-bc
+$$
+
+Ceci est une expression mathématique <span class="highlighted">inline</span> $e^{2i\pi} = 1$.
