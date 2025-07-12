@@ -1,0 +1,52 @@
+{
+  "ingredients": [
+    {
+      "name": "Sablé breton",
+      "list": [
+        {
+          "name": "Lait de soja",
+          "quantity": "135",
+          "unit": "g"
+        },
+        {
+          "name": "Huile de tournesol",
+          "quantity": "10",
+          "unit": "g"
+        },
+        {
+          "name": "Sucre blanc, semoule",
+          "quantity": "115",
+          "unit": "g"
+        },
+        {
+          "name": "Sucre vergeoise, blonde",
+          "quantity": "115",
+          "unit": "g"
+        },
+        {
+          "name": "Beurre de cacao",
+          "quantity": "225",
+          "unit": "g"
+        },
+        {
+          "name": "Farine de blé, T45",
+          "quantity": "375",
+          "unit": "g"
+        },
+        {
+          "name": "Levure chimique",
+          "quantity": "20",
+          "unit": "g"
+        },
+        {
+          "name": "Sel fin",
+          "quantity": "5",
+          "unit": "g"
+        }
+      ],
+      "total": "400"
+    }
+  ],
+  "portion": 1000,
+  "portion_unit": "g"
+}
