@@ -1,4 +1,4 @@
 [submodule "content-obsidian"]
 	path = content-obsidian
-	url = git@github.com:BananaPB/baroudeur-content.git
-	# url = https://github.com/BananaPB/baroudeur-content
+	# url = git@github.com:BananaPB/baroudeur-content.git
+	url = https://github.com/BananaPB/baroudeur-content
