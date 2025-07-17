@@ -7,7 +7,7 @@
     "pull:content": "git submodule update --remote --merge",
     "generate:content": "node scripts/generate-content.js",
     "dev": "npm run pull:content && npm run generate:content && astro dev",
-    "build": "npm run generate:content && astro check && astro build",
+    "build": "npm run pull:content && npm run generate:content && astro check && astro build",
     "start": "astro dev",
     "preview": "astro preview",
     "astro": "astro",
