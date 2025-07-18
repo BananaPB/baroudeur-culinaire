@@ -3,8 +3,8 @@ import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PostHead from '@/components/TheoryPostHead.astro'
 import PostNavigation from '@/components/TheoryPostNavigation.astro'
 import SubpostsHeader from '@/components/TheorySubpostsHeader.astro'
-import RecipesTOCHeader from '@/components/RecipesTOCHeader.astro'
-import TOCSidebar from '@/components/RecipesTOCSidebar.astro'
+import TOCHeader from '@/components/TOCHeader.astro'
+import TOCSidebar from '@/components/TheoryTOCSidebar.astro'
 import SubpostsSidebar from '@/components/TheorySubpostsSidebar.astro'
 import { badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -45,7 +45,7 @@ const post = Astro.props
 const currentPostId = Astro.params.id
 const currentPostArray = currentPostId.split('/')
 
-const { Content } = await render(post)
+const { Content, headings } = await render(post)
 
 const isCurrentSubpost = isSubpost(currentPostId)
 const navigation = await getAdjacentPosts(currentPostId)
@@ -77,9 +77,12 @@ const ingredients = await getIngredients(currentPostId);
     )
   }
   {
-    ingredients?.ingredients && ingredients?.ingredients.length > 0 && (
-      <RecipesTOCHeader ingredientsList={ingredients as IngredientsList} currentPostId={currentPostId} slot="table-of-contents" />
-    )
+    headings?.length > 0 &&
+      !(
+        isCurrentSubpost &&
+        headings.length === 1 &&
+        headings[0].text === post.data.title
+      ) && <TOCHeader slot="table-of-contents" headings={headings} />
   }
 
   <section
@@ -116,13 +119,18 @@ const ingredients = await getIngredients(currentPostId);
 
     {
       post.data.image && (
-        <Image
-          src={post.data.image}
-          alt={post.data.title}
-          width={1200}
-          height={630}
-          class="col-span-full mx-auto w-full max-w-5xl object-cover"
-        />
+        <div class="col-span-full mx-auto w-full max-w-5xl text-right">
+          <Image
+            src={post.data.image}
+            alt={post.data.title}
+            width={1200}
+            height={630}
+            class="object-cover"
+          />
+          {post.data.banner_credits && (
+            <span class="banner-source text-foreground/50 italic" set:html={post.data.banner_credits}></span>
+          )}
+        </div>
       )
     }
 
@@ -195,8 +203,8 @@ const ingredients = await getIngredients(currentPostId);
     </section>
 
     {
-      ingredients && ingredients.ingredients.length > 0 && (
-        <TOCSidebar ingredientsList={ingredients as IngredientsList} sections={tocSections} currentPostId={currentPostId} />
+      tocSections.length > 0 && (
+        <TOCSidebar sections={tocSections} currentPostId={currentPostId} />
       )
     }
 

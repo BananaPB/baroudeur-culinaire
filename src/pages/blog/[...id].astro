@@ -108,13 +108,18 @@ const tocSections = await getTOCSections(currentPostId)
 
     {
       post.data.image && (
-        <Image
-          src={post.data.image}
-          alt={post.data.title}
-          width={1200}
-          height={630}
-          class="col-span-full mx-auto w-full max-w-5xl object-cover"
-        />
+        <div class="col-span-full mx-auto w-full max-w-5xl text-right">
+          <Image
+            src={post.data.image}
+            alt={post.data.title}
+            width={1200}
+            height={630}
+            class="object-cover"
+          />
+          {post.data.banner_credits && (
+            <span class="banner-source text-foreground/50 italic" set:html={post.data.banner_credits}></span>
+          )}
+        </div>
       )
     }
 

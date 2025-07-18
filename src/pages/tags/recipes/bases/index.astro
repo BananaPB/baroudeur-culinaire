@@ -13,7 +13,7 @@ const sortedTags = await getSortedTagsByCategory('bases')
 <Layout class="max-w-3xl">
   <PageHead slot="head" title="Tags" />
   <Breadcrumbs items={[
-    { href:'/tags', label: 'Tags', icon: 'lucide:tags' },
+    { label: 'Tags', icon: 'lucide:tags' },
     { href:`/tags/${basePath}`, label: 'Recettes', icon: 'lucide:cooking-pot' },
     { label: 'Bases', icon: 'lucide:hash' },
   ]} />

@@ -72,6 +72,7 @@
   --background: oklch(0.116 0.0247 73.07);
   --foreground: oklch(0.9728 0.0152 61.35);
   --primary: oklch(0.5668 0.1395 50.16);
+  --primary-muted: oklch(0.5668 0.1395 50.16 / 25%);
   --primary-foreground: oklch(0.116 0.0247 73.07);
   --secondary: oklch(0.4668 0.0868 69.18);
   --secondary-muted: oklch(0.4668 0.0868 69.18 / 25%);
@@ -198,3 +199,6 @@ article table tbody tr:nth-child(odd){background-color: var(--secondary-muted);}
   article table td{color: var(--background);}
   article table td strong{color: var(--background);}
 }
+
+.banner-source a{text-decoration: underline;}
+.banner-source a:hover{opacity: .5;}

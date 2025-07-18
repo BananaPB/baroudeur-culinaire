@@ -12,6 +12,7 @@ const blog = defineCollection({
       image: image().optional(),
       tags: z.array(z.string()).optional(),
       draft: z.boolean().optional(),
+      banner_credits: z.string().optional()
     }),
 })
 
@@ -27,6 +28,7 @@ const recipes = defineCollection({
       tags: z.array(z.string()).optional(),
       draft: z.boolean().optional(),
       order: z.number().optional(),
+      banner_credits: z.string().optional()
     }),
 })
 
@@ -41,6 +43,7 @@ const theory = defineCollection({
       tags: z.array(z.string()).optional(),
       draft: z.boolean().optional(),
       order: z.number().optional(),
+      banner_credits: z.string().optional()
     }),
 })
 

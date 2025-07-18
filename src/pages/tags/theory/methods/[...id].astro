@@ -34,7 +34,7 @@ const { tag, posts } = Astro.props
     noindex
   />
   <Breadcrumbs items={[
-    { href:'/tags', label: 'Tags', icon: 'lucide:tags' },
+    { label: 'Tags', icon: 'lucide:tags' },
     { href:`/tags/${basePath}`, label: 'Recettes', icon: 'lucide:notebook' },
     { href: `/tags/${basePath}/methods`, label: 'Méthodes', icon: 'lucide:drafting-compass' },
     { href:'/tags', label: tag, icon: 'lucide:tags' },
