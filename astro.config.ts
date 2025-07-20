@@ -19,7 +19,6 @@ import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
 
 import tailwindcss from '@tailwindcss/vite'
 import collectionSearch from 'astro-collection-search';
-import { fileURLToPath } from 'url';
 
 export default defineConfig({
   site: 'https://astro-erudite.vercel.app',

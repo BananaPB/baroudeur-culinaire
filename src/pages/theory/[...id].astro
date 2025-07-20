@@ -26,7 +26,6 @@ import { formatDate } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
 import { render } from 'astro:content'
-import { getIngredients, type IngredientsList } from '@/lib/recipes-utils'
 
 const CATEGORY_LABELS: Record<string, { label: string; icon: string }> = {
   methods: { label: "Méthodes", icon: "lucide:drafting-compass" },
@@ -63,7 +62,6 @@ const combinedReadingTime =
     : null
 
 const tocSections = await getTOCSections(currentPostId)
-const ingredients = await getIngredients(currentPostId);
 ---
 
 <Layout>
