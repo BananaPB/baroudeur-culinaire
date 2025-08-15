@@ -72,8 +72,25 @@ export async function removeSection(markdown, sectionTitle) {
 
   tree.children = newChildren;
 
-  const result = unified().use(remarkStringify).stringify(tree);
-  return result;
+  const result = unified().use(remarkStringify, {
+    bullet: '-',
+    emphasis: '_',
+    listItemIndent: 'one',
+    rule: '-',
+    ruleSpaces: false,
+    strong: '_',
+    // Configure to preserve LaTeX math expressions
+    fences: true
+  }).stringify(tree);
+  
+  // Post-process to fix escaped LaTeX expressions
+  // This restores asterisks and other characters that were escaped in LaTeX math
+  const fixedResult = result.replace(/\\\*/g, '*')
+                           .replace(/\\_/g, '_')
+                           .replace(/\\\{/g, '{')
+                           .replace(/\\\}/g, '}');
+  
+  return fixedResult;
 }
 
 function extractIngredientsSectionFromAst(tree) {
@@ -288,7 +305,19 @@ async function processFile(filePath, baseCategory, subCategory = null) {
     tags: Array.isArray(data.tags) ? data.tags : []
   };
 
+ 
+
+  // Protect math blocks before removeSection to prevent remark from escaping LaTeX
+  let mathBlocks = [];
+  updatedContent = updatedContent.replace(/(\${1,2})([\s\S]+?)\1/g, (match) => {
+    mathBlocks.push(match);
+    return `%%MATH_BLOCK_${mathBlocks.length - 1}%%`;
+  });
+
   updatedContent = await removeSection(updatedContent, 'Ingrédients');
+
+  // Restore math blocks after removeSection
+  updatedContent = updatedContent.replace(/%%MATH_BLOCK_(\d+)%%/g, (_, idx) => mathBlocks[Number(idx)]);
 
   if (importStatements.length > 0) {
     updatedContent = importStatements.join('\n') + '\n\n' + updatedContent;
