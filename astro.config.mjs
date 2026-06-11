@@ -5,7 +5,8 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://baroudeurculinaire.fr/',
+	site: 'https://bananapb.github.io',
+	base: '/baroudeur-culinaire',
 	integrations: [
 		sitemap({
 		// configuration options
