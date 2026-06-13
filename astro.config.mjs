@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import sitemap from '@astrojs/sitemap';
+import starlightThemeNova from 'starlight-theme-nova'
 
 // https://astro.build/config
 export default defineConfig({
@@ -12,19 +13,24 @@ export default defineConfig({
 		// configuration options
 		}),
 		starlight({
+			plugins: [starlightThemeNova()],
 			title: 'Baroudeur Culinaire',
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
+			social: [
+				{ icon: 'github', label: 'GitHub', href: 'https://github.com/BananaPB/baroudeur-culinaire' },
+				{ icon: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/baroudeurculinaire/' }
+			],
 			sidebar: [
 				{
-					label: 'Guides',
-					items: [
-						// Each item here is one entry in the navigation menu.
-						{ label: 'Example Guide', slug: 'guides/example' },
-					],
+					label: 'Composants',
+					items: [{ autogenerate: { directory: 'composants' } }],
 				},
 				{
-					label: 'Reference',
-					items: [{ autogenerate: { directory: 'reference' } }],
+					label: 'Méthodes',
+					items: [{ autogenerate: { directory: 'methodes' } }],
+				},
+				{
+					label: 'Recherches',
+					items: [{ autogenerate: { directory: 'recherches' } }],
 				},
 			],
 		}),
