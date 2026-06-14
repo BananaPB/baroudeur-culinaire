@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@astrojs/starlight": "^0.40.0",
+    "@tmlmt/cooklang-parser": "^2.1.8",
     "astro": "^6.4.5",
     "sharp": "^0.34.5",
+    "starlight-sidebar-topics": "^0.8.0",
     "starlight-theme-nova": "^0.11.11"
   }
 }

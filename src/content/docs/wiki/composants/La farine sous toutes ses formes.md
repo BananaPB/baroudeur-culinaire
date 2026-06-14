@@ -1,5 +1,6 @@
 ---
 title: La farine sous toutes ses formes
+topic: docs
 description: Tout ce qu'il faut savoir sur la farine, son origine et sa fabrication.
 date: 2025-07-05
 ---

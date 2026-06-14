@@ -1,0 +1,101 @@
+---
+import { CooklangParser, getFlatIngredients, getFlatCookware, getFlatTimers } from '@cooklang/cooklang';
+
+interface Props {
+  source: string;
+}
+
+const { source } = Astro.props;
+
+const parser = new CooklangParser();
+const [recipe] = parser.parse(source);
+
+const flatIngredients = getFlatIngredients(recipe);
+const flatCookware = getFlatCookware(recipe);
+const flatTimers = getFlatTimers(recipe);
+---
+
+<div class="cooklang-recipe">
+  <section class="ingredients">
+    <h2>Ingrédients</h2>
+    <ul>
+      {flatIngredients.map((ing) => (
+        <li>
+          {ing.displayText && <strong>{ing.displayText}</strong>}
+          {' '}{ing.name}
+          {ing.note && <em> ({ing.note})</em>}
+        </li>
+      ))}
+    </ul>
+
+    {flatCookware.length > 0 && (
+      <>
+        <h2>Matériel</h2>
+        <ul>
+          {flatCookware.map((cw) => (
+            <li>
+              {cw.displayText && <strong>{cw.displayText} × </strong>}
+              {cw.name}
+            </li>
+          ))}
+        </ul>
+      </>
+    )}
+  </section>
+
+  <section class="steps">
+    <h2>Préparation</h2>
+    {recipe.sections.map((section) => (
+      <>
+        {section.name && <h3>{section.name}</h3>}
+        <ol>
+          {section.content
+            .filter((c) => c.type === 'step')
+            .map((c) => {
+              const step = c.value;
+              return (
+                <li>
+                  {step.items.map((item) => {
+                    switch (item.type) {
+                      case 'text':
+                        return item.value;
+                      case 'ingredient': {
+                        const ing = recipe.ingredients[item.index];
+                        return <strong>{ing.name}</strong>;
+                      }
+                      case 'cookware': {
+                        const cw = recipe.cookware[item.index];
+                        return <em>{cw.name}</em>;
+                      }
+                      case 'timer': {
+                        const t = recipe.timers[item.index];
+                        const flat = flatTimers.find((ft) => ft.name === t.name);
+                        return <mark>{flat?.displayText ?? ''}</mark>;
+                      }
+                      default:
+                        return null;
+                    }
+                  })}
+                </li>
+              );
+            })}
+        </ol>
+      </>
+    ))}
+  </section>
+</div>
+
+<style>
+  .cooklang-recipe {
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 768px) {
+    .cooklang-recipe {
+      grid-template-columns: 1fr 2fr;
+    }
+  }
+  .ingredients ul, .steps ol {
+    line-height: 1.8;
+  }
+</style>
