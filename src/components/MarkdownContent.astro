@@ -1,0 +1,14 @@
+---
+import RecipeTemplate from './RecipeTemplate.astro';
+
+const { entry } = Astro.locals.starlightRoute;
+const isRecipe = !!(entry.data as Record<string, unknown>).recipeSections;
+---
+
+{isRecipe ? (
+  <div class="sl-markdown-content">
+    <RecipeTemplate />
+  </div>
+) : (
+  <div class="sl-markdown-content"><slot /></div>
+)}

@@ -1,0 +1,74 @@
+---
+import Default from '@astrojs/starlight/components/TableOfContents.astro';
+
+const { entry } = Astro.locals.starlightRoute;
+const data = entry.data as Record<string, unknown>;
+const ingredients = data.recipeIngredients as string | undefined;
+const cookware = data.recipeCookware as string | undefined;
+const recipeYield = data.recipeYield as string | undefined;
+---
+
+{ingredients ? (
+  <div id="recipe-sidebar">
+    {recipeYield && (
+      <div class="recipe-sidebar-section recipe-scale">
+        <label for="scale-target">Mise à l'échelle</label>
+        <input
+          type="number"
+          id="scale-target"
+          value={recipeYield}
+          data-base={recipeYield}
+          step="10"
+          min="10"
+          autocomplete="off"
+        />
+      </div>
+    )}
+    <div class="recipe-sidebar-section">
+      <h2><span class="icon">🥘</span><span class="title">Ingrédients</span></h2>
+      <Fragment set:html={ingredients} />
+    </div>
+    {cookware && (
+      <div class="recipe-sidebar-section">
+        <h2><span class="icon">🍳</span><span class="title">Matériel</span></h2>
+        <Fragment set:html={cookware} />
+      </div>
+    )}
+  </div>
+) : (
+  <Default />
+)}
+
+<script>
+  const input = document.getElementById('scale-target') as HTMLInputElement | null;
+  if (input) {
+    const baseYield = parseFloat(input.dataset.base ?? input.value);
+
+    function applyScale() {
+      const newYield = parseFloat(input!.value);
+      if (isNaN(newYield) || newYield <= 0) return;
+      const ratio = newYield / baseYield;
+      document.querySelectorAll<HTMLElement>('.ingredient-qty[data-original]').forEach(el => {
+        const original = parseFloat(el.dataset.original!);
+        const unit = el.dataset.unit ?? '';
+        el.textContent = formatQty(original * ratio) + (unit ? ` ${unit}` : '');
+      });
+    }
+
+    const urlScale = new URLSearchParams(window.location.search).get('scale');
+    if (urlScale) {
+      input.value = urlScale;
+      applyScale();
+    } else {
+      input.value = baseYield.toString();
+    }
+
+    input.addEventListener('input', applyScale);
+  }
+
+  function formatQty(n: number): string {
+    if (n >= 100) return Math.round(n).toString();
+    if (n >= 10) return (Math.round(n * 10) / 10).toString();
+    return (Math.round(n * 100) / 100).toString();
+  }
+</script>

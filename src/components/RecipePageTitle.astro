@@ -1,0 +1,50 @@
+---
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+const { entry } = Astro.locals.starlightRoute;
+const data = entry.data as Record<string, unknown>;
+const isRecipe = !!data.recipeSections;
+
+let heroImage: ImageMetadata | null = null;
+if (isRecipe) {
+  const allImages = import.meta.glob<{ default: ImageMetadata }>(
+    '../recipes/**/*.{jpg,jpeg,png,webp,avif}'
+  );
+  const slug = entry.id.replace(/^recipes\//, '');
+  const imageEntry = Object.entries(allImages).find(
+    ([key]) => key.replace(/\.[^.]+$/, '') === `../recipes/${slug}`
+  );
+  heroImage = imageEntry ? (await imageEntry[1]()).default : null;
+}
+---
+
+{isRecipe ? (
+  <div class="recipe-page-title">
+    {heroImage && (
+      <Image class="recipe-cover" src={heroImage} alt={entry.data.title} />
+    )}
+    <div class="recipe-hero">
+      <div class="recipe-title">
+        <h1 id="_top">{entry.data.title}</h1>
+        {entry.data.description && (
+          <p class="recipe-description">{entry.data.description}</p>
+        )}
+      </div>
+      {(data.recipePreptime || data.recipeTags || data.recipeYield) && (
+        <div class="recipe-meta">
+          {data.recipeYield && <span class="recipe-meta-item">🍽 Quantity: <strong>{data.recipeYield as string}g</strong></span>}
+          {data.recipePreptime && <span class="recipe-meta-item">⏱️ Prep: <strong>{data.recipePreptime as string}</strong></span>}
+        </div>
+        <div class="recipe-meta">
+          {data.recipeTags && (data.recipeTags as string).split(',').map(tag => (
+            <span class="recipe-meta-tag">#{tag.trim()}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+) : (
+  <Default />
+)}

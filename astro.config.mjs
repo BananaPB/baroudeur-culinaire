@@ -14,8 +14,8 @@ export default defineConfig({
 		// configuration options
 		}),
 		starlight({
+			customCss: ['./src/styles/recipe.css', './src/styles/theme.css'],
 			plugins: [
-				starlightThemeNova(),
 				starlightSidebarTopics([
 					{
 						id: 'wiki',
@@ -42,6 +42,11 @@ export default defineConfig({
 					}
 				], { topics: { wiki: ['/'] } })
 			],
+			components: {
+				TableOfContents: './src/components/PageSidebar.astro',
+				MarkdownContent: './src/components/MarkdownContent.astro',
+				PageTitle: './src/components/RecipePageTitle.astro',
+			},
 			title: 'Baroudeur Culinaire',
 			social: [
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/BananaPB/baroudeur-culinaire' },

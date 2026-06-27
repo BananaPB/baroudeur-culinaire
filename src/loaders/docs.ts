@@ -4,7 +4,6 @@ import { readdir, readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import {
   Recipe,
-  type Step,
   type Ingredient,
   type FixedValue,
   type Range,
@@ -12,6 +11,7 @@ import {
   type DecimalValue,
   type FractionValue,
 } from '@tmlmt/cooklang-parser';
+import type { SerializedSection, SerializedItem } from '../types/recipe';
 
 const CATEGORIES = ['desserts', 'entrees', 'plats'] as const;
 
@@ -42,6 +42,17 @@ export function combinedDocsLoader(): Loader {
             data: {
               title: recipe.metadata.title ?? slug,
               description: recipe.metadata.description,
+              prev: false,
+              next: false,
+              recipeIngredients: renderIngredients(recipe),
+              recipeCookware: renderCookware(recipe),
+              recipeSections: JSON.stringify(serializeRecipe(recipe)),
+              recipeServings: recipe.metadata.servings as string | undefined,
+              recipePreptime: recipe.metadata['prep time'] as string | undefined,
+              recipeTags: Array.isArray(recipe.metadata.tags)
+                ? (recipe.metadata.tags as string[]).join(', ')
+                : recipe.metadata.tags as string | undefined,
+              recipeYield: recipe.metadata['yield'] as string | undefined,
             },
           });
 
@@ -50,13 +61,15 @@ export function combinedDocsLoader(): Loader {
             data,
             filePath: `src/content/docs/recipes/${category}/${file}`,
             digest: context.generateDigest(raw),
-            rendered: { html: renderRecipe(recipe) },
+            rendered: { html: '' },
           });
         }
       }
     },
   };
 }
+
+// ─── Quantity helpers ─────────────────────────────────────────────────────────
 
 function formatFixedValue(v: TextValue | DecimalValue | FractionValue): string {
   switch (v.type) {
@@ -74,56 +87,86 @@ function formatQuantity(q: FixedValue | Range): string {
 function ingredientQty(ing: Ingredient): string {
   if (!ing.quantity) return '';
   const amount = formatQuantity(ing.quantity);
-  return ing.unit ? `${amount} ${ing.unit}` : amount;
+  return ing.unit ? `${amount} ${ing.unit}` : amount;
 }
 
-function renderRecipe(recipe: Recipe): string {
-  const parts: string[] = [];
+function getNumericQty(ing: Ingredient): number | null {
+  if (!ing.quantity || ing.quantity.type !== 'fixed') return null;
+  const val = ing.quantity.value;
+  if (val.type === 'decimal') return val.value;
+  if (val.type === 'fraction') return val.num / val.den;
+  return null;
+}
 
-  if (recipe.ingredients.length > 0) {
-    parts.push('<h2>Ingrédients</h2><ul>');
-    for (const ing of recipe.ingredients) {
-      const qty = ingredientQty(ing);
-      parts.push(`<li>${qty ? `<strong>${qty}</strong> ` : ''}${ing.name}</li>`);
-    }
-    parts.push('</ul>');
+// ─── Sidebar HTML renderers ───────────────────────────────────────────────────
+
+function renderIngredients(recipe: Recipe): string {
+  if (recipe.ingredients.length === 0) return '';
+  const parts = ['<ul>'];
+  for (const ing of recipe.ingredients) {
+    const qty = ingredientQty(ing);
+    const numericQty = getNumericQty(ing);
+    const qtyAttr = numericQty !== null
+      ? ` data-original="${numericQty}" data-unit="${ing.unit ?? ''}"`
+      : '';
+    const prep = ing.preparation
+      ? `<small class="ingredient-prep">(${ing.preparation})</small>`
+      : '';
+    parts.push(
+      `<li class="ingredient">` +
+      `<div class="ingredient-main">` +
+      `<span class="ingredient-name">${ing.name}</span>` +
+      `<span class="ingredient-qty"${qtyAttr}>${qty}</span>` +
+      `</div>` +
+      prep +
+      `</li>`
+    );
   }
-
-  const hasSteps = recipe.sections.some(s => s.content.some(c => c.type === 'step'));
-  if (!hasSteps) return parts.join('\n');
-
-  parts.push('<h2>Préparation</h2>');
-
-  for (const section of recipe.sections) {
-    if (section.name) parts.push(`<h3>${section.name}</h3>`);
-
-    const steps = section.content.filter((c): c is Step => c.type === 'step');
-    if (steps.length === 0) continue;
-
-    parts.push('<ol>');
-    for (const step of steps) {
-      const text = step.items.map(item => {
-        switch (item.type) {
-          case 'text':
-            return item.value;
-          case 'ingredient': {
-            const ing = recipe.ingredients[item.index];
-            return `<strong>${item.displayName ?? ing.name}</strong>`;
-          }
-          case 'cookware': {
-            const cw = recipe.cookware[item.index];
-            return `<em>${cw.name}</em>`;
-          }
-          case 'timer': {
-            const t = recipe.timers[item.index];
-            return `<em>${formatQuantity(t.duration)} ${t.unit}</em>`;
-          }
-        }
-      }).join('');
-      parts.push(`<li>${text}</li>`);
-    }
-    parts.push('</ol>');
-  }
-
+  parts.push('</ul>');
   return parts.join('\n');
+}
+
+function renderCookware(recipe: Recipe): string {
+  if (recipe.cookware.length === 0) return '';
+  const parts = ['<ul>'];
+  for (const cw of recipe.cookware) {
+    const qty = cw.quantity ? formatQuantity(cw.quantity) : '';
+    parts.push(`<li>${qty ? `<strong>${qty}</strong> ` : ''}${cw.name}</li>`);
+  }
+  parts.push('</ul>');
+  return parts.join('\n');
+}
+
+// ─── Recipe serializer (for Astro template) ───────────────────────────────────
+
+function serializeRecipe(recipe: Recipe): SerializedSection[] {
+  return recipe.sections.map((section) => ({
+    name: section.name,
+    content: section.content.map((c): SerializedSection['content'][number] => {
+      if (c.type === 'note') {
+        return { type: 'note', note: c.note };
+      }
+      return {
+        type: 'step',
+        items: c.items.map((item): SerializedItem => {
+          switch (item.type) {
+            case 'text':
+              return { type: 'text', value: item.value };
+            case 'ingredient': {
+              const ing = recipe.ingredients[item.index];
+              return { type: 'ingredient', name: item.displayName ?? ing.name };
+            }
+            case 'cookware': {
+              const cw = recipe.cookware[item.index];
+              return { type: 'cookware', name: cw.name };
+            }
+            case 'timer': {
+              const t = recipe.timers[item.index];
+              return { type: 'timer', duration: formatQuantity(t.duration), unit: t.unit };
+            }
+          }
+        }),
+      };
+    }),
+  }));
 }

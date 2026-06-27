@@ -1,0 +1,41 @@
+---
+import { Aside, Steps } from '@astrojs/starlight/components';
+import type { SerializedSection, SerializedItem } from '../types/recipe';
+
+const { entry } = Astro.locals.starlightRoute;
+const data = entry.data as Record<string, unknown>;
+const sections = JSON.parse(data.recipeSections as string) as SerializedSection[];
+
+function renderItem(item: SerializedItem): string {
+  switch (item.type) {
+    case 'ingredient': return `<span class="ingredient-badge">${item.name}</span>`;
+    case 'cookware':   return `<span class="cookware-badge">${item.name}</span>`;
+    case 'timer':      return `<em>${item.duration} ${item.unit}</em>`;
+    case 'text':       return item.value;
+  }
+}
+
+---
+
+<div id="recipe">
+  {sections.map((section) => (
+    <div class="recipe-section">
+      {section.name && <h3>{section.name}</h3>}
+      <Steps>
+        <ol>
+              {section.content.map((content) => (
+                content.type === 'note' ? (
+                  <Aside icon="comment-alt">{content.note}</Aside>
+                ) : (
+                  <li class="step-text">
+                    <p>
+                      <Fragment set:html={content.items.map(renderItem).join('')} />
+                    </p>
+                  </li>
+                )
+              ))}
+        </ol>
+      </Steps>
+    </div>
+  ))}
+</div>
