@@ -1,0 +1,167 @@
+---
+import Default from '@astrojs/starlight/components/MobileTableOfContents.astro';
+
+const { entry } = Astro.locals.starlightRoute;
+const data = entry.data as Record<string, unknown>;
+const ingredients = data.recipeIngredients as string | undefined;
+const cookware = data.recipeCookware as string | undefined;
+const recipeYield = data.recipeYield as string | undefined;
+---
+
+{ingredients ? (
+  <div class="mobile-recipe-sidebar">
+    <div class="mobile-toc-bar">
+      <details name="mobile-recipe-nav">
+        <summary>
+          <span class="toggle sl-flex">🥘 Ingrédients</span>
+        </summary>
+        <div class="dropdown">
+          {recipeYield && (
+            <div class="mobile-sidebar-section recipe-scale">
+              <label for="scale-target-mobile">Mise à l'échelle</label>
+              <div class="input-group">
+                <input
+                  type="number"
+                  id="scale-target-mobile"
+                  class="scale-input"
+                  value={recipeYield}
+                  data-base={recipeYield}
+                  step="10"
+                  min="10"
+                  autocomplete="off"
+                />
+                <span class="input-suffix">grammes</span>
+              </div>
+            </div>
+          )}
+          <div class="mobile-sidebar-section">
+            <Fragment set:html={ingredients} />
+          </div>
+        </div>
+      </details>
+      {cookware && (
+        <details name="mobile-recipe-nav">
+          <summary>
+            <span class="toggle sl-flex">🍳 Matériel</span>
+          </summary>
+          <div class="dropdown">
+            <div class="mobile-sidebar-section">
+              <Fragment set:html={cookware} />
+            </div>
+          </div>
+        </details>
+      )}
+    </div>
+  </div>
+) : (
+  <Default />
+)}
+
+<style>
+  .mobile-recipe-sidebar {
+    position: fixed;
+    z-index: var(--sl-z-index-toc);
+    top: calc(var(--sl-nav-height) - 1px);
+    inset-inline: 0;
+    border-top: 1px solid var(--sl-color-gray-5);
+  }
+
+  @media (min-width: 50rem) {
+    .mobile-recipe-sidebar {
+      inset-inline-start: var(--sl-content-inline-start, 0);
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .mobile-recipe-sidebar { display: none; }
+  }
+
+  .mobile-toc-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    height: var(--sl-mobile-toc-height);
+    border-bottom: 1px solid var(--sl-color-hairline-shade);
+    background-color: var(--sl-color-bg-nav);
+  }
+
+  summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  summary::marker,
+  summary::-webkit-details-marker { display: none; }
+
+  .toggle {
+    flex-shrink: 0;
+    gap: 0.5rem;
+    align-items: center;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    padding-block: 0.5rem;
+    padding-inline: 0.75rem;
+    line-height: 1;
+    font-size: var(--sl-text-xs);
+    white-space: nowrap;
+    background-color: var(--sl-color-black);
+    color: var(--sl-color-white);
+    cursor: pointer;
+    user-select: none;
+  }
+  details[open] .toggle { border-color: var(--sl-color-accent); }
+
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: calc(60vh - var(--sl-nav-height) - var(--sl-mobile-toc-height));
+    overflow-y: auto;
+    background-color: var(--sl-color-bg);
+    border-top: 1px solid var(--sl-color-gray-5);
+    box-shadow: var(--sl-shadow-md);
+    overscroll-behavior: contain;
+    z-index: 1;
+  }
+
+  .mobile-sidebar-section {
+    padding: 1rem;
+  }
+
+  .mobile-sidebar-section :global(ul) {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .mobile-sidebar-section :global(ul li) {
+    list-style: none;
+    border-bottom: 1px solid var(--sl-color-gray-5);
+  }
+  .mobile-sidebar-section :global(.ingredient-prep) {
+    display: block;
+    opacity: 0.7;
+    font-style: italic;
+    font-size: 0.8em;
+  }
+  .mobile-sidebar-section :global(.ingredient-main) {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .mobile-sidebar-section :global(.ingredient-name) { flex: 1; }
+  .mobile-sidebar-section :global(.ingredient-qty) {
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--sl-color-text-accent);
+  }
+  .mobile-sidebar-section :global(a.recipe-link) {
+    color: var(--sl-color-accent);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--sl-color-accent);
+  }
+  .mobile-sidebar-section :global(a.recipe-link:hover) { border-bottom-style: solid; }
+</style>

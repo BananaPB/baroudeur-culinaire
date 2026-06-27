@@ -34,7 +34,7 @@ if (isRecipe) {
       </div>
       {(data.recipePreptime || data.recipeTags || data.recipeYield) && (
         <div class="recipe-meta">
-          {data.recipeYield && <span class="recipe-meta-item">🍽 Quantity: <strong>{data.recipeYield as string}g</strong></span>}
+          {data.recipeYield && <span class="recipe-meta-item">🍽 Quantity: <strong class="recipe-yield-value" data-original={data.recipeYield as string}>{data.recipeYield as string}g</strong></span>}
           {data.recipePreptime && <span class="recipe-meta-item">⏱️ Prep: <strong>{data.recipePreptime as string}</strong></span>}
         </div>
         <div class="recipe-meta">

@@ -40,6 +40,7 @@ export default defineConfig({
 			],
 			components: {
 				TableOfContents: './src/components/PageSidebar.astro',
+				MobileTableOfContents: './src/components/MobileRecipeSidebar.astro',
 				MarkdownContent: './src/components/MarkdownContent.astro',
 				PageTitle: './src/components/RecipePageTitle.astro',
 			},

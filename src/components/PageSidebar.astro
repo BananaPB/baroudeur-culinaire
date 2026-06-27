@@ -12,16 +12,20 @@ const recipeYield = data.recipeYield as string | undefined;
   <div id="recipe-sidebar">
     {recipeYield && (
       <div class="recipe-sidebar-section recipe-scale">
-        <label for="scale-target">Mise à l'échelle</label>
-        <input
-          type="number"
-          id="scale-target"
-          value={recipeYield}
-          data-base={recipeYield}
-          step="10"
-          min="10"
-          autocomplete="off"
-        />
+        <label for="scale-target">🍽 Quantité</label>
+        <div class="input-group">
+          <input
+            type="number"
+            id="scale-target"
+            class="scale-input"
+            value={recipeYield}
+            data-base={recipeYield}
+            step="10"
+            min="10"
+            autocomplete="off"
+          />
+          <span class="input-suffix">grammes</span>
+        </div>
       </div>
     )}
     <div class="recipe-sidebar-section">
@@ -40,20 +44,19 @@ const recipeYield = data.recipeYield as string | undefined;
 )}
 
 <script>
-  const input = document.getElementById('scale-target') as HTMLInputElement | null;
-  if (input) {
-    const baseYield = parseFloat(input.dataset.base ?? input.value);
+  const inputs = document.querySelectorAll<HTMLInputElement>('.scale-input');
+  if (inputs.length > 0) {
+    const baseYield = parseFloat(inputs[0].dataset.base ?? inputs[0].value);
 
-    function applyScale() {
-      const newYield = parseFloat(input!.value);
+    function applyScale(newYield: number) {
       if (isNaN(newYield) || newYield <= 0) return;
       const ratio = newYield / baseYield;
+      inputs.forEach(inp => { inp.value = String(newYield); });
       document.querySelectorAll<HTMLElement>('.ingredient-qty[data-original]').forEach(el => {
         const original = parseFloat(el.dataset.original!);
         const unit = el.dataset.unit ?? '';
         const scaled = original * ratio;
         el.textContent = formatQty(scaled) + (unit ? ` ${unit}` : '');
-
         const recipeLink = el.closest('li.ingredient')?.querySelector<HTMLAnchorElement>('a.recipe-link');
         if (recipeLink) {
           const url = new URL(recipeLink.href);
@@ -61,17 +64,18 @@ const recipeYield = data.recipeYield as string | undefined;
           recipeLink.href = url.toString();
         }
       });
+      document.querySelectorAll<HTMLElement>('.recipe-yield-value[data-original]').forEach(el => {
+        const original = parseFloat(el.dataset.original!);
+        el.textContent = formatQty(original * ratio) + 'g';
+      });
     }
 
     const urlScale = new URLSearchParams(window.location.search).get('scale');
-    if (urlScale) {
-      input.value = urlScale;
-      applyScale();
-    } else {
-      input.value = baseYield.toString();
-    }
+    applyScale(urlScale ? parseFloat(urlScale) : baseYield);
 
-    input.addEventListener('input', applyScale);
+    inputs.forEach(inp => {
+      inp.addEventListener('input', () => applyScale(parseFloat(inp.value)));
+    });
   }
 
   function formatQty(n: number): string {
