@@ -133,6 +133,16 @@
     font-size: 0.8em;
 }
 
+#recipe-sidebar a.recipe-link {
+    color: var(--sl-color-accent);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--sl-color-accent);
+}
+
+#recipe-sidebar a.recipe-link:hover {
+    border-bottom-style: solid;
+}
+
 #recipe-sidebar .ingredient-main{
     display: flex;
     justify-content: space-between;

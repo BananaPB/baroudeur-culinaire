@@ -13,7 +13,7 @@ import {
 } from '@tmlmt/cooklang-parser';
 import type { SerializedSection, SerializedItem } from '../types/recipe';
 
-const CATEGORIES = ['desserts', 'entrees', 'plats'] as const;
+type RecipeIndex = Map<string, { url: string; numericYield: number | null }>;
 
 export function combinedDocsLoader(): Loader {
   return {
@@ -22,48 +22,59 @@ export function combinedDocsLoader(): Loader {
       await docsLoader().load(context);
 
       const recipesDir = fileURLToPath(new URL('../recipes/', import.meta.url));
+      const base = import.meta.env.BASE_URL;
 
-      for (const category of CATEGORIES) {
-        let files: string[];
-        try {
-          files = await readdir(`${recipesDir}${category}/`);
-        } catch {
-          continue;
-        }
+      // ── Pass 1: recursively find and parse every .cook file ──────────────
+      type RecipeEntry = { relativePath: string; file: string; slug: string; id: string; raw: string; recipe: Recipe };
+      const allRecipes: RecipeEntry[] = [];
 
-        for (const file of files.filter(f => f.endsWith('.cook'))) {
-          const slug = file.replace(/\.cook$/, '');
-          const id = `recipes/${category}/${slug}`;
-          const raw = await readFile(`${recipesDir}${category}/${file}`, 'utf-8');
-          const recipe = new Recipe(raw);
+      const allFiles = await readdir(recipesDir, { recursive: true });
+      for (const entry of allFiles) {
+        const file = (entry as string).replace(/\\/g, '/');
+        if (!file.endsWith('.cook')) continue;
+        const relativePath = file.replace(/\.cook$/, '');
+        const slug = relativePath.split('/').at(-1)!;
+        const raw = await readFile(`${recipesDir}${file}`, 'utf-8');
+        allRecipes.push({ relativePath, file, slug, id: `recipes/${relativePath}`, raw, recipe: new Recipe(raw) });
+      }
 
-          const data = await context.parseData({
-            id,
-            data: {
-              title: recipe.metadata.title ?? slug,
-              description: recipe.metadata.description,
-              prev: false,
-              next: false,
-              recipeIngredients: renderIngredients(recipe),
-              recipeCookware: renderCookware(recipe),
-              recipeSections: JSON.stringify(serializeRecipe(recipe)),
-              recipeServings: recipe.metadata.servings as string | undefined,
-              recipePreptime: recipe.metadata['prep time'] as string | undefined,
-              recipeTags: Array.isArray(recipe.metadata.tags)
-                ? (recipe.metadata.tags as string[]).join(', ')
-                : recipe.metadata.tags as string | undefined,
-              recipeYield: recipe.metadata['yield'] as string | undefined,
-            },
-          });
+      // ── Build recipe index: "relative/path" → URL + numeric yield ────────
+      const recipeIndex: RecipeIndex = new Map();
+      for (const { relativePath, recipe } of allRecipes) {
+        const yieldRaw = recipe.metadata['yield'];
+        const numericYield = yieldRaw ? parseFloat(yieldRaw as string) : null;
+        const url = `${base}recipes/${relativePath}/`;
+        recipeIndex.set(relativePath.toLowerCase(), { url, numericYield });
+      }
 
-          context.store.set({
-            id,
-            data,
-            filePath: `src/content/docs/recipes/${category}/${file}`,
-            digest: context.generateDigest(raw),
-            rendered: { html: '' },
-          });
-        }
+      // ── Pass 2: store each recipe with full index ─────────────────────────
+      for (const { relativePath, file, slug, id, raw, recipe } of allRecipes) {
+        const data = await context.parseData({
+          id,
+          data: {
+            title: recipe.metadata.title ?? slug,
+            description: recipe.metadata.description,
+            prev: false,
+            next: false,
+            recipeIngredients: renderIngredients(recipe, recipeIndex),
+            recipeCookware: renderCookware(recipe),
+            recipeSections: JSON.stringify(serializeRecipe(recipe)),
+            recipeServings: recipe.metadata.servings as string | undefined,
+            recipePreptime: recipe.metadata['prep time'] as string | undefined,
+            recipeTags: Array.isArray(recipe.metadata.tags)
+              ? (recipe.metadata.tags as string[]).join(', ')
+              : recipe.metadata.tags as string | undefined,
+            recipeYield: recipe.metadata['yield'] as string | undefined,
+          },
+        });
+
+        context.store.set({
+          id,
+          data,
+          filePath: `src/content/docs/recipes/${file}`,
+          digest: context.generateDigest(raw),
+          rendered: { html: '' },
+        });
       }
     },
   };
@@ -100,7 +111,7 @@ function getNumericQty(ing: Ingredient): number | null {
 
 // ─── Sidebar HTML renderers ───────────────────────────────────────────────────
 
-function renderIngredients(recipe: Recipe): string {
+function renderIngredients(recipe: Recipe, recipeIndex: RecipeIndex): string {
   if (recipe.ingredients.length === 0) return '';
   const parts = ['<ul>'];
   for (const ing of recipe.ingredients) {
@@ -112,10 +123,26 @@ function renderIngredients(recipe: Recipe): string {
     const prep = ing.preparation
       ? `<small class="ingredient-prep">(${ing.preparation})</small>`
       : '';
+
+    let nameHtml = ing.name;
+    if (ing.flags?.includes('recipe') && ing.extras?.path) {
+      const rawPath = ing.extras.path.replace(/\.cook$/, '').replace(/\\/g, '/');
+      const recipesMarker = rawPath.indexOf('src/recipes/');
+      const key = (recipesMarker !== -1
+        ? rawPath.slice(recipesMarker + 'src/recipes/'.length)
+        : rawPath.replace(/^\.\//, '')
+      ).toLowerCase();
+      const linked = key ? recipeIndex.get(key) : undefined;
+      if (linked) {
+        const scaleParam = numericQty !== null ? `?scale=${numericQty}` : '';
+        nameHtml = `<a href="${linked.url}${scaleParam}" class="recipe-link">${ing.name}</a>`;
+      }
+    }
+
     parts.push(
       `<li class="ingredient">` +
       `<div class="ingredient-main">` +
-      `<span class="ingredient-name">${ing.name}</span>` +
+      `<span class="ingredient-name">${nameHtml}</span>` +
       `<span class="ingredient-qty"${qtyAttr}>${qty}</span>` +
       `</div>` +
       prep +

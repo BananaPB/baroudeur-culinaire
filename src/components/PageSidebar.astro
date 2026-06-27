@@ -51,7 +51,15 @@ const recipeYield = data.recipeYield as string | undefined;
       document.querySelectorAll<HTMLElement>('.ingredient-qty[data-original]').forEach(el => {
         const original = parseFloat(el.dataset.original!);
         const unit = el.dataset.unit ?? '';
-        el.textContent = formatQty(original * ratio) + (unit ? ` ${unit}` : '');
+        const scaled = original * ratio;
+        el.textContent = formatQty(scaled) + (unit ? ` ${unit}` : '');
+
+        const recipeLink = el.closest('li.ingredient')?.querySelector<HTMLAnchorElement>('a.recipe-link');
+        if (recipeLink) {
+          const url = new URL(recipeLink.href);
+          url.searchParams.set('scale', Math.round(scaled).toString());
+          recipeLink.href = url.toString();
+        }
       });
     }
 

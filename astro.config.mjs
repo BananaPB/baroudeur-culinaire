@@ -34,11 +34,7 @@ export default defineConfig({
 						label: 'Recettes',
 						link: '/recipes/',
 						icon: 'puzzle',
-						items: [
-							{ label: 'Desserts', items: [{ autogenerate: { directory: 'recipes/desserts' } }] },
-							{ label: 'Entrées', items: [{ autogenerate: { directory: 'recipes/entrees' } }] },
-							{ label: 'Plats', items: [{ autogenerate: { directory: 'recipes/plats' } }] },
-						],
+						items: [{ autogenerate: { directory: 'recipes' } }],
 					}
 				], { topics: { wiki: ['/'] } })
 			],
