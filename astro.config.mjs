@@ -7,8 +7,7 @@ import starlightSidebarTopics from 'starlight-sidebar-topics'
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://bananapb.github.io',
-	base: '/baroudeur-culinaire',
+	site: 'https://baroudeurculinaire.fr',
 	integrations: [
 		sitemap({
 		// configuration options

@@ -12,6 +12,83 @@
 	--sl-color-gray-6: #2c2524;
 	--sl-color-black: #1b1717;
 }
+/* Footnotes separator */
+/* Footnote reference tags — styled as ingredient badges */
+.sl-markdown-content sup:has([data-footnote-ref]) {
+	vertical-align: super;
+	font-size: inherit;
+	position: relative;
+}
+
+.footnote-tooltip {
+	position: absolute;
+	bottom: calc(100% + 0.5rem);
+	left: 50%;
+	transform: translateX(-50%);
+	width: max-content;
+	max-width: min(22rem, 90vw);
+	padding: 0.625rem 0.75rem;
+	background: var(--sl-color-bg);
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: 0.5rem;
+	box-shadow: var(--sl-shadow-md);
+	font-size: 0.875rem;
+	font-weight: 400;
+	color: var(--sl-color-text);
+	line-height: var(--sl-line-height);
+	white-space: normal;
+	text-align: left;
+	z-index: 20;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: opacity 0.15s, visibility 0.15s;
+}
+
+.footnote-tooltip p { margin: 0; }
+
+sup:has([data-footnote-ref]):hover .footnote-tooltip,
+sup:has([data-footnote-ref]):focus-within .footnote-tooltip {
+	opacity: 1;
+	visibility: visible;
+}
+
+.sl-markdown-content [data-footnote-ref] {
+	color: #6e401a;
+	background: #f4c682;
+	padding: 0 0.3rem;
+	border: 1px solid #ad815d;
+	font-weight: 500;
+	font-size: 0.75rem;
+	border-radius: 0.25em;
+	display: inline-flex;
+	align-items: center;
+	text-decoration: none;
+	margin-left: 4px;
+	line-height: normal;
+}
+
+.sl-markdown-content [data-footnote-ref]:hover {
+	background: #f0b660;
+}
+
+/* Footnotes separator */
+.sl-markdown-content [data-footnotes] {
+	margin-top: 3rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--sl-color-gray-5);
+	font-size: 0.875rem;
+	color: var(--sl-color-gray-3);
+}
+
+.sl-markdown-content [data-footnotes] > h2 {
+	all: revert;
+	font-size: var(--sl-text-h5);
+	font-weight: 600;
+	margin-bottom: 0.75rem;
+	color: var(--sl-color-gray-3);
+}
+
 /* Light mode colors. */
 :root[data-theme='light'] {
 	--sl-color-accent-low: #ead1c7;

@@ -1,7 +1,7 @@
 ---
 title: Classification des aliments et des composants de cuisine
 description: Familles et catégories des composants de cuisine pour mieux organiser ses recettes.
-date: 2025-07-05
+lastUpdated: 2025-07-05
 ---
 # Fruits
 # Légumes

@@ -1,7 +1,7 @@
 ---
 title: Pesées et dimensions des produits de pâtisserie française
 description: Lorem ipsum dolor sit amet.
-date: 2025-08-16
+lastUpdated: 2025-08-16
 ---
 # Pâte à choux
 ## Chouquette

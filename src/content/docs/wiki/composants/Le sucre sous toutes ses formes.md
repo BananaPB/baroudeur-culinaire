@@ -1,7 +1,7 @@
 ---
 title: Le sucre sous toutes ses formes
 description: Tout ce qu'il faut savoir sur le sucre, son origine et sa fabrication.
-date: 2025-07-05
+lastUpdated: 2025-07-05
 ---
 
 # Introduction

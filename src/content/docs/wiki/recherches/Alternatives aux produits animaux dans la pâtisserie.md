@@ -1,15 +1,15 @@
 ---
 title: Alternatives aux produits animaux dans la pâtisserie
 description: Synthèse de toutes les alternatives aux produits animaux dans la pâtisserie.
-date: 2025-07-05
+lastUpdated: 2025-07-05
 ---
-# Introduction
+
 Pour des raisons d'inclusivité, d'écologie et évidemment d'éthique j'ai commencé à faire des recherches pour remplacer les produits animaux dans les recettes de pâtisseries traditionnelle. De façon générale, on trouve énormément de ressources sur internet sur une pâtisserie végétale, mais elles sont presque toujours constituées de recettes pratiques plutôt que d'explication théorique. Dans le cas d'une personne qui souhaite s'introduire au sujet, je trouve l'approche peu adaptée. En effet dans la grandeur d'internet, on trouvera toujours quelqu'un qui à réussi à élaborer une version végétarienne voir végétalienne d'une recette classique. Mais on fini alors par juste se constituer un annuaire de recettes végétales sans vraiment apprendre quoi que ce soit. Je me retrouve alors avec une, peut-être deux recettes de cookies végan plutôt plats et croquants, alors que moi je préfère les cookies épais et fondants. Mais si personne n'a trouvé la recette pour ça, alors soit je doit faire des tests soit je dois me contenter de quelque chose qui est un peu ce que je veux mais pas trop. On accumule des expérience pâtissière jamais nulle mais toujours un peu à côté de ce qu'on aimerait et à la longue on fini par ressentir de la frustration.
 Très vite je décide donc d'essayer de faire des recherches dont le but est de trouver des solutions (toujours le plus simples possible) pour végétaliser n'importe quelle recette classique.
 
-# Matières premières
+## Matières premières
 Finalement quand je me penche sur la place des produits animaux dans la pâtisserie, j'ai vite l'impression qu'il n'y en a pas tant que ça. La vrais difficultés est surtout la diversité des propriétés de chaque ingrédients que l'on souhaite remplacer. 
-## Propriétés
+### Propriétés
 Il faut bien comprendre que lorsqu'on choisi un ingrédient pour une recette c'est en général pour l'une de ses propriétés. Autrement c'est que celui-ci est facilement remplaçable. J'ai compté 7 propriétés qu'il est nécessaire de maitriser pour être capable ensuite d'identifier l'utilité d'un ingrédient :
 
 **Goût :**

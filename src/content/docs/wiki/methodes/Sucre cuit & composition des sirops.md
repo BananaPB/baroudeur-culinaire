@@ -1,7 +1,7 @@
 ---
 title: Sucre cuit & composition des sirops
 description: "Tout comprendre des sucres cuits : fabrication et utilisations."
-date: 2025-07-05
+lastUpdated: 2025-07-05
 ---
 # Introduction
 

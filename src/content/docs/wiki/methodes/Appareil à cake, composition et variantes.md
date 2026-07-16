@@ -1,7 +1,7 @@
 ---
 title: Appareil à cake, composition et variantes
 description: Apprendre ce qui compose un cake et comment le décliner à l'infini.
-date: 2025-07-20
+lastUpdated: 2025-07-20
 ---
 # Définition
 En anglais, le terme _cake_ est l'équivalent du mot "gâteau" en français, c'est un genre de mot fourre-tout qui regroupe un peu tous les desserts qui sont coupés en tranches ou en parts pour être dégustés. En pâtisserie française, le terme _cake_ désigne un type très précis de gâteaux, un gâteau moelleux, avec une mie aérée qui est traditionnellement sous forme longue de lingot. C'est (souvent) le gâteau d'anniversaire des enfants, car il est bien plus simple qu'un entremets à réaliser et il peut être facilement décliné en goût (vanille, chocolat, etc.)

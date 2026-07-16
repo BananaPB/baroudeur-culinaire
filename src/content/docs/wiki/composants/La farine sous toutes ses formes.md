@@ -2,7 +2,7 @@
 title: La farine sous toutes ses formes
 topic: docs
 description: Tout ce qu'il faut savoir sur la farine, son origine et sa fabrication.
-date: 2025-07-05
+lastUpdated: 2025-07-05
 ---
 # Les céréales
 Les céréales sont des plantes de la famille des _poacées_ (les graminées). Elles produisent des grains comestibles qui peuvent se consommer tel quel, sous forme de son ou de farine. Les 5 céréales principales sont (par ordre de consommation dans le monde) : 

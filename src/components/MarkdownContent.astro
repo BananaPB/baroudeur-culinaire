@@ -1,4 +1,5 @@
 ---
+import '@astrojs/starlight/style/markdown.css';
 import RecipeTemplate from './RecipeTemplate.astro';
 
 const { entry } = Astro.locals.starlightRoute;
@@ -12,3 +13,21 @@ const isRecipe = !!(entry.data as Record<string, unknown>).recipeSections;
 ) : (
   <div class="sl-markdown-content"><slot /></div>
 )}
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('[data-footnote-ref]').forEach(ref => {
+    const id = ref.getAttribute('href')?.slice(1);
+    if (!id) return;
+    const footnote = document.getElementById(id);
+    if (!footnote) return;
+
+    const clone = footnote.cloneNode(true) as Element;
+    clone.querySelectorAll('[data-footnote-backref]').forEach(el => el.remove());
+
+    const tooltip = document.createElement('span');
+    tooltip.className = 'footnote-tooltip';
+    tooltip.innerHTML = clone.innerHTML.trim();
+
+    ref.parentElement!.appendChild(tooltip);
+  });
+</script>

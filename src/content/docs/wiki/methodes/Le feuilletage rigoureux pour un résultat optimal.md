@@ -1,7 +1,7 @@
 ---
 title: Le feuilletage rigoureux pour un résultat optimal
 description: Lorem ipsum dolor sit amet.
-date: 2025-08-03
+lastUpdated: 2025-08-03
 ---
 # Les ingrédients
 Quand on commence à apprendre à réaliser de la pâte feuilletée, on tombe rapidement sur beaucoup de sources d'information (plus ou moins viables) qui nous expliquent que le secret d'un bon feuilletage repose sur deux choses :
