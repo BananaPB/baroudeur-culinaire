@@ -54,6 +54,7 @@ export function combinedDocsLoader(): Loader {
           data: {
             title: recipe.metadata.title ?? slug,
             description: recipe.metadata.description,
+            draft: isDraft(raw),
             prev: false,
             next: false,
             recipeIngredients: renderIngredients(recipe, recipeIndex),
@@ -78,6 +79,18 @@ export function combinedDocsLoader(): Loader {
       }
     },
   };
+}
+
+// ─── Metadata helpers ──────────────────────────────────────────────────────────
+
+/**
+ * Cooklang's Metadata type doesn't recognize `draft`, so the parser silently
+ * drops it. Read it straight from the frontmatter block instead: a bare
+ * `draft` line or `draft: true` marks the recipe as a draft.
+ */
+function isDraft(raw: string): boolean {
+  const frontmatter = raw.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
+  return /^draft(\s*:\s*true)?\s*$/im.test(frontmatter);
 }
 
 // ─── Quantity helpers ─────────────────────────────────────────────────────────
