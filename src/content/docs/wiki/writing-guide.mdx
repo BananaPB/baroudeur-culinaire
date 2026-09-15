@@ -1,0 +1,185 @@
+---
+title: Writing guide
+description: Le wiki culinaire du Baroudeur — composants, méthodes et recherches pour la pâtisserie.
+topic: wiki
+---
+
+## Writing guide — Wiki articles
+
+House rules for writing coherent `src/content/docs/wiki/**` articles. Scope: **wiki
+articles only**. `.cook` recipes are a different system (Cooklang's own `>` note
+syntax, rendered by `RecipeTemplate.astro`) — none of the components below are
+available inside a `.cook` file.
+
+This guide exists because most of the current wiki content was pasted in from
+Obsidian, which has its own callout (`> [!info]`) and embed (`![[image.jpg]]`)
+syntax that Starlight does not understand. Nothing in this project converts
+that syntax — it silently renders as broken/plain text. Converting an Obsidian
+note means translating its syntax, not just moving the text over.
+
+## File format: `.md` vs `.mdx`
+
+- **Default to `.md`.** `.mdx` is not a safe "just in case" default: MDX
+  parses `<` followed by a letter/digit as the start of a JSX tag and `{` as a
+  JS expression. Ordinary French prose hits this constantly — testing
+  `Une pâte avec <10% de gluten...` in an `.mdx` file **hard-crashes the
+  build** with `Unexpected character '1' before name, expected a character
+  that can start a name`. That exact sentence is inert text in `.md`.
+- Switch to **`.mdx`** only on the specific page that needs a component
+  requiring a JSX tag and an `import` — `Card`, `CardGrid`, `Tabs`, `Steps`,
+  `FileTree`, `LinkCard`. Even then, watch for stray `<`/`{` elsewhere in that
+  page's prose.
+- You do **not** need `.mdx` for asides (`:::` syntax works in plain `.md`,
+  see below) or for raw inline HTML — CommonMark passes raw HTML through in
+  `.md` too.
+
+## Headings
+
+- The frontmatter `title:` is the page's H1. **Never write a top-level `#` in
+  the body** — start content at `##`.
+- Always leave **one blank line before and after every heading**. Not
+  enforced by the parser, but it's the universal Markdown convention, keeps
+  diffs clean, and is what any Markdown linter expects.
+- The table of contents only shows `##` and `###` by default
+  (`minHeadingLevel: 2, maxHeadingLevel: 3` in Starlight's config). **Keep
+  articles to two heading levels: `##` for sections, `###` for subsections.**
+  A `####` will render fine but silently vanish from the TOC — if a page
+  truly needs a 3rd level, either restructure it, or override per-page in
+  frontmatter:
+  ```yaml
+  tableOfContents:
+    maxHeadingLevel: 4
+  ```
+  Prefer restructuring over the override; it's easy to forget the override
+  exists when someone else edits the page later.
+
+## Asides (callouts)
+
+Starlight only ships **four** variants: `note`, `tip`, `caution`, `danger`.
+There is no `info`, `important`, `warning`, or `example` variant — if you type
+one of those it just gets treated as an unrecognized directive.
+
+**Always use the `:::` directive form** — never the `<Aside>` component. The
+directive syntax has full feature parity with the component (custom title,
+custom icon), works in plain `.md`, and doesn't need an import, so there's no
+remaining case where the component form buys you anything, even on a page
+that's already `.mdx` for other reasons:
+
+```md
+:::tip
+Practical technique or advice.
+:::
+
+:::note[Titre personnalisé]
+Supplementary info, definitions, background facts.
+:::
+
+:::caution[Attention]{icon="warning"}
+Custom title and icon — no component needed for either.
+:::
+```
+
+**Mapping from the old Obsidian callouts** found in existing pages:
+
+| Obsidian syntax    | Use instead                        | When                                                          |
+| ------------------ | ----------------------------------- | -------------------------------------------------------------- |
+| `> [!info]`        | `:::note`                          | Background facts, definitions, tangential info                |
+| `> [!tip]`          | `:::tip`                           | Practical advice, technique, "here's a good way to do X"       |
+| `> [!warning]`      | `:::caution`                       | Common mistakes, things that go wrong if ignored               |
+| `> [!important]`    | `:::note[Important]` or `:::caution` | Judge case-by-case: a core fact to remember → `note` with a title; a real risk → `caution` |
+| `> [!example]`      | `:::note[Exemple]`                 | No native "example" variant — use a titled note                |
+
+Reserve `danger` for genuine safety issues (food safety, allergens) — don't use
+it for regular emphasis.
+
+## Cards / CardGrid
+
+Use a `Card` when you want a **short, scannable list or fact pulled out of the
+prose flow** and given its own visual box — e.g. the "pseudo-céréales" list in
+`La farine sous toutes ses formes.mdx`. Use `CardGrid` to lay two or more
+related `Card`s side by side (as the index/getting-started pages already do
+for navigation).
+
+Don't use a `Card` for:
+- a plain bullet list embedded in running text (just use `-` list syntax) —
+  reserve it for when the list deserves to be visually separated from the
+  paragraph flow;
+- long-form prose — that belongs in normal paragraphs, not a box.
+
+## Tables
+
+Use a table only for genuinely tabular, multi-column comparisons — e.g. the
+gluten-content-by-cereal table. Don't reach for a table to format a simple
+list; that's what Cards or bullet lists are for.
+
+## Footnotes
+
+`[^1]` / `[^1]: text` (GFM footnotes) already work and get a hover tooltip via
+the script in `MarkdownContent.astro`. Use footnotes **only for sources and
+citations**, placed at the very end of the document — not as a substitute for
+an aside or a parenthetical.
+
+## Code blocks
+
+Recipes and wiki articles rarely need these — quantities and ingredients are
+already handled by Cooklang in `.cook` files. If you ever do need to show a
+literal formula, ratio, or preformatted text, a fenced block works as usual:
+
+````md
+```
+exemple de bloc
+```
+````
+
+Don't use a code block just to visually set apart a quote or a number — that's
+what an aside, a table, or bold/italic emphasis is for.
+
+## Images
+
+- **Never use Obsidian's `![[image.jpg]]` embed syntax** — Starlight doesn't
+  resolve it; it renders as literal broken text.
+- Use standard markdown image syntax with a relative path to an asset placed
+  next to the content (or under `src/assets/`), and always write real alt
+  text:
+  ```md
+  ![Grain de blé coupé en coupe transversale](../../../assets/grain-ble.jpg)
+  ```
+  Local relative-path images get Astro's automatic optimization; a `src/...`
+  absolute-from-project-root path does not.
+
+## Links
+
+- **Use plain Markdown links everywhere**, internal and external:
+  `[texte](/wiki/...)`, `[texte](https://...)`. No raw HTML needed.
+- Don't force external links open in a new tab with
+  `<a target="_blank">` (an existing pattern in some pages, e.g. Wikipedia
+  sources) — it takes control away from the reader and breaks their back
+  button. If new-tab behavior is genuinely wanted for external links, do it
+  once, site-wide, with a `rehype-external-links` plugin in
+  `astro.config.mjs`, not by hand-typing HTML in every article — that's the
+  only way it stays consistent across the whole wiki.
+
+## Emphasis
+
+Existing convention worth keeping consistent:
+- **Bold** for key terms on first introduction, or names of specific
+  varieties/products (e.g. **Khorosan**, **protéines de gluten**).
+- _Italic_ for secondary/scientific/foreign terms (e.g. _poacées_,
+  _prolamines_, _pseudo-céréales_).
+
+## Frontmatter checklist
+
+Every wiki article should set:
+```yaml
+---
+title: <title>
+description: <one-sentence summary, shown in search/previews>
+lastUpdated: <YYYY-MM-DD>
+---
+```
+`topic: <id>` is a real field added by the `starlight-sidebar-topics` plugin
+(`node_modules/starlight-sidebar-topics/schema.ts`) — it associates a page
+with a sidebar topic group when the page isn't otherwise listed in
+`astro.config.mjs`. Wiki pages placed under `recipes/` or `wiki/` and
+referenced via `autogenerate` in the sidebar config don't need it; only set it
+on a page that lives outside those autogenerated directories.

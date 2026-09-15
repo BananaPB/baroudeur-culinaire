@@ -79,8 +79,7 @@ const recipeYield = data.recipeYield as string | undefined;
   }
 
   function formatQty(n: number): string {
-    if (n >= 100) return Math.round(n).toString();
-    if (n >= 10) return (Math.round(n * 10) / 10).toString();
-    return (Math.round(n * 100) / 100).toString();
+    if (n >= 10) return Math.round(n).toString();
+    return (Math.round(n * 10) / 10).toString();
   }
 </script>
